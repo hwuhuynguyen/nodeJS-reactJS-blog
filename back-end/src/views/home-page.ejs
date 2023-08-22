@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/_head.ejs'); %>
+  </head>
+  <body>
+    <header class="main-header">
+      <%- include('partials/_header-home.ejs'); %>
+    </header>
+
+    <main>
+      <section class="main-content">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-9">
+              <div>
+                <h2>
+                  <i class="bi bi-hourglass-top me-2"></i>Today's top highlights
+                </h2>
+                <p>
+                  Latest breaking news, pictures, videos, and special reports
+                </p>
+              </div>
+              <div class="row">
+                <% posts.forEach(function(post) { %>
+                <div class="col-sm-6">
+                  <div class="card">
+                    <a href="/view/posts/<%= post.id %>">
+                      <!-- Card img -->
+                      <% if (typeof post.postPicture != 'undefined') { %>
+                      <div>
+                        <img
+                          style="height: 320px"
+                          class="card-img"
+                          src="<%= post.postPicture %>"
+                        />
+                      </div>
+                      <% } else { %>
+                      <div>
+                        <img class="card-img" src="/images/blog/4by3/12.jpg" />
+                      </div>
+                      <% } %>
+                    </a>
+
+                    <div class="card-body">
+                      <h4 class="card-title">
+                        <a href="/view/posts/<%= post.id %>">
+                          <%= post.title %>
+                        </a>
+                      </h4>
+                      <p><%= post.content %></p>
+                      <!-- Card info -->
+                      <ul class="nav card-info">
+                        <li class="nav-item">
+                          <div class="nav-link">
+                            <div class="avatar-box">
+                              <div class="avatar">
+                                <% if (typeof post.profilePicture !=
+                                'object') { %>
+                                <img
+                                  style="aspect-ratio: 5/4"
+                                  class=""
+                                  src="<%= post.profilePicture %>"
+                                />
+                                <% } else { %>
+                                <img
+                                  style="aspect-ratio: 5/4"
+                                  class=""
+                                  src="/img/default-avatar.png"
+                                />
+                                <% } %>
+                              </div>
+                              <span class="author">
+                                <a href="#"> <%= post.name %> </a></span
+                              >
+                            </div>
+                          </div>
+                        </li>
+                        <li class="nav-item">
+                          • <%= post.createdAt.toLocaleDateString('en-US', {
+                          month: 'long', day: 'numeric', year: 'numeric' }) %>
+                        </li>
+                        <li class="nav-item">
+                          • <span><i class="bi bi-hand-thumbs-up"></i></span> <%= post.like_count %>
+                        </li>
+                        <li class="nav-item">
+                          • <span><i class="bi bi-chat-right"></i></span> <%= post.comment_count %>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <% }) %>
+              </div>
+            </div>
+
+            <div class="right-content col-lg-3">
+              <div>
+                <!-- Social widget START -->
+                <div class="row g-2">
+                  <div class="col-4">
+                    <a href="#" class="statistic text-body bg-facebook">
+                      <i class="bi bi-facebook"></i>
+                      <h6>1.5K</h6>
+                      <span>Fans</span>
+                    </a>
+                  </div>
+                  <div class="col-4">
+                    <a href="#" class="statistic text-body bg-instagram">
+                      <i class="bi bi-instagram"></i>
+                      <h6>1.8M</h6>
+                      <span>Followers</span>
+                    </a>
+                  </div>
+                  <div class="col-4">
+                    <a href="#" class="statistic text-body bg-youtube">
+                      <i class="bi bi-youtube"></i>
+                      <h6>22K</h6>
+                      <span>Subs</span>
+                    </a>
+                  </div>
+                </div>
+                <!-- Social widget END -->
+
+                <div class="row">
+                  <!-- Recent post widget START -->
+                  <div class="recent-post col-12 col-sm-6 col-lg-12">
+                    <h4>Recent posts</h4>
+
+                    <!-- Recent post item -->
+                    <% recentPosts.forEach(function(post) { %>
+                    <div class="card">
+                      <div class="row g-3">
+                        <div class="col-4">
+                          <img
+                            style="aspect-ratio: 5/4"
+                            class="news"
+                            src="<%= post.postPicture %>"
+                          />
+                        </div>
+                        <div class="col-8">
+                          <h6>
+                            <a href="/view/posts/<%= post.id %>"
+                              ><%= post.title %></a
+                            >
+                          </h6>
+                          <div class="small">
+                            <%= post.createdAt.toLocaleDateString('en-US', {
+                            month: 'long', day: 'numeric', year: 'numeric' }) %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <% }) %>
+                  </div>
+
+                  <!-- Recent post widget END -->
+                  <div class="recent-post col-12 col-sm-6 col-lg-12">
+                    <h4>Most active users</h4>
+
+                    <!-- Recent post item -->
+                    <% activeUsers.forEach(function(user) { %>
+                    <div class="card">
+                      <div class="row g-3">
+                        <div class="col-4">
+                          <% if (typeof user.profilePicture != 'object') { %>
+                          <img
+                            style="aspect-ratio: 5/4"
+                            class="news"
+                            src="<%= user.profilePicture %>"
+                          />
+                          <% } else { %>
+                          <img
+                            style="aspect-ratio: 5/4"
+                            class="news"
+                            src="/img/default-avatar.png"
+                          />
+                          <% } %>
+                        </div>
+                        <div class="col-8">
+                          <h6 style="font-weight: 800"><%= user.name %></h6>
+                          <div class="small">
+                            Total posts: <%= user.totalPosts %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <% }) %>
+                  </div>
+
+                  <!-- ADV widget START -->
+                  <div class="advertisement col-12 col-sm-6 col-lg-12">
+                    <a href="#">
+                      <img class="news" src="/images/adv.png" />
+                    </a>
+                    <div class="advertisement-text">
+                      ads via <a href="#"><u>Bootstrap</u></a>
+                    </div>
+                  </div>
+                  <!-- ADV widget END -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="main-footer"><%- include('partials/_footer.ejs'); %></footer>
+  </body>
+</html>

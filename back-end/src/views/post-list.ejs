@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/_head.ejs'); %>
+  </head>
+  <body>
+    <header class="main-header">
+      <%- include('partials/_header-post.ejs'); %>
+    </header>
+
+    <main>
+      <section class="main-content">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="row">
+                <div class="col-10">
+                  <h2>
+                    <i class="bi bi-hourglass-top me-2"></i>Today's top posts
+                  </h2>
+                  <p>
+                    Latest breaking news, pictures, videos, and special reports
+                  </p>
+                </div>
+                <div class="col-2">
+                  <a
+                    class="btn btn-primary d-block"
+                    href="#"
+                    data-toggle="modal"
+                    data-target="#exampleModal"
+                    >Create new post</a
+                  >
+                </div>
+                <!-- Begin modal -->
+                <div
+                  class="modal fade"
+                  id="exampleModal"
+                  tabindex="-1"
+                  role="dialog"
+                  aria-labelledby="exampleModalLabel"
+                  aria-hidden="true"
+                >
+                  <div
+                    class="modal-dialog modal-dialog-centered"
+                    role="document"
+                  >
+                    <div class="modal-content">
+                      <div class="modal-header border-bottom-0">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                          Create new post
+                        </h5>
+                        <button
+                          type="button"
+                          class="close"
+                          data-dismiss="modal"
+                          aria-label="Close"
+                        >
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <form
+                        method="POST"
+                        action="/api/posts"
+                        enctype="multipart/form-data"
+                      >
+                        <div class="modal-body">
+                          <div class="form-group">
+                            <label for="title1">Title</label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="title1"
+                              name="title"
+                              placeholder="Enter your post's title"
+                              required
+                            />
+                          </div>
+                          <div class="form-group">
+                            <label for="content1">Content</label>
+                            <textarea
+                              type="text"
+                              class="form-control"
+                              id="content1"
+                              placeholder="Content"
+                              name="content"
+                              rows="20"
+                              required
+                            ></textarea>
+                          </div>
+                          <div class="form-group">
+                            <label for="postPicture1">Post picture</label>
+                            <input
+                              type="file"
+                              class="form-control"
+                              id="postPicture1"
+                              name="postPicture"
+                              placeholder="Enter your post's title"
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class="modal-footer border-top-0 d-flex justify-content-center"
+                        >
+                          <button type="submit" class="btn btn-success">
+                            Create
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <!-- End modal -->
+              </div>
+              <div class="row">
+                <% posts.forEach(function(post) { %>
+                <div class="col-sm-4">
+                  <div class="card">
+                    <a href="/view/posts/<%= post.id %>">
+                      <!-- Card img -->
+                      <% if ((typeof post.postPicture != 'object') && (post.postPicture != '')) { %>
+                      <div>
+                        <img  
+                          style="height: 320px"
+                          class="card-img"
+                          src="<%= post.postPicture %>"
+                        />
+                      </div>
+                      <% } else { %>
+                      <div>
+                        <img class="card-img" 
+                        style="height: 320px"
+                        src="/img/default-post-picture.png" />
+                      </div>
+                      <% } %>
+                    </a>
+                    <div class="card-body">
+                      <h4 class="card-title">
+                        <a href="/view/posts/<%= post.id %>">
+                          <%= post.title %>
+                        </a>
+                      </h4>
+                      <p><%= post.content %></p>
+                      <!-- Card info -->
+                      <ul class="nav card-info">
+                        <li class="nav-item">
+                          <div class="nav-link">
+                            <div class="avatar-box">
+                              <div class="avatar">
+                                <% if (typeof post.profilePicture !=
+                                'object') { %>
+                                <img
+                                  style="aspect-ratio: 5/4"
+                                  class=""
+                                  src="<%= post.profilePicture %>"
+                                />
+                                <% } else { %>
+                                <img
+                                  style="aspect-ratio: 5/4"
+                                  class=""
+                                  src="/img/default-avatar.png"
+                                />
+                                <% } %>
+                              </div>
+                              <span class="author">
+                                <a href="#"> <%= post.name %> </a></span
+                              >
+                            </div>
+                          </div>
+                        </li>
+                        <li class="nav-item">
+                          • <%= post.createdAt.toLocaleDateString('en-US', {
+                          month: 'long', day: 'numeric', year: 'numeric' }) %>
+                        </li>
+                        <li class="nav-item">
+                          • <span><i class="bi bi-hand-thumbs-up"></i></span> <%= post.like_count %>
+                        </li>
+                        <li class="nav-item">
+                          • <span><i class="bi bi-chat-right"></i></span> <%= post.comment_count %>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="main-footer"><%- include('partials/_footer.ejs'); %></footer>
+  </body>
+</html>

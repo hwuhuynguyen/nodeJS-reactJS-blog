@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/_head.ejs'); %>
+    <link rel="stylesheet" href="/css/indent.css" />
+  </head>
+  <body>
+    <header class="main-header">
+      <%- include('partials/_header-post.ejs'); %>
+    </header>
+    <main>
+      <div class="container mx-auto my-3">
+        <div class="row">
+          <!-- Card img  -->
+          <% if (typeof post.postPicture != 'undefined') { %>
+          <div class="col-5">
+            <img
+              style="height: 320px"
+              class="card-img"
+              src="<%= post.postPicture %>"
+            />
+          </div>
+          <% } else { %>
+          <div class="col-5">
+            <img class="card-img" src="/img/default-post-picture.png" />
+          </div>
+          <% } %>
+          <div class="card-body col-7">
+            <div class="p-3">
+              <h1><%= post.title %></h1>
+              <ul class="nav card-info d-flex">
+                <li class="nav-item">
+                  <div class="nav-link">
+                    <div class="avatar-box">
+                      <!-- <div class="avatar">
+                      <img src="/images/avatar/01.jpg" />
+                    </div> -->
+                      <span class="author">
+                        <a href="#"> <%= post.name %> </a></span
+                      >
+                    </div>
+                  </div>
+                </li>
+                <li class="nav-item">
+                  • <%= post.createdAt.toLocaleDateString('en-US', { month:
+                  'long', day: 'numeric', year: 'numeric' }) %>
+                </li>
+              </ul>
+              <ul class="nav card-info d-flex">
+                <li class="nav-item">
+                  <span class="strong">Like: </span>
+                  <span id="likeCount-<%= post.id %>"
+                    ><%= post.like_count %></span
+                  >
+                </li>
+                <li class="nav-item">
+                  <% if (typeof user != 'undefined') { %>
+                  <button
+                    id="likePost-button"
+                    style="border: 1px solid blue"
+                    class="btn <% if (post.isLiked == true) { %> btn-primary <% } else { %> btn-light <% } %>"
+                    onclick="likePost('<%= post.id %>')"
+                  >
+                    Like
+                  </button>
+                  <% } %> <% if (typeof user == 'undefined') { %> <% } else { %>
+                  <% if (user.id === post.author) { %>
+                  <a
+                    class="btn btn-warning"
+                    href="#"
+                    data-toggle="modal"
+                    data-target="#exampleModal"
+                    >Update</a
+                  >
+                  <!-- Begin modal -->
+                  <div
+                    class="modal fade"
+                    id="exampleModal"
+                    tabindex="-1"
+                    role="dialog"
+                    aria-labelledby="exampleModalLabel"
+                    aria-hidden="true"
+                  >
+                    <div
+                      class="modal-dialog modal-dialog-centered"
+                      role="document"
+                    >
+                      <div class="modal-content">
+                        <div class="modal-header border-bottom-0">
+                          <h5 class="modal-title" id="exampleModalLabel">
+                            Update this post
+                          </h5>
+                          <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                          >
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <form id="postForm" enctype="multipart/form-data">
+                          <div class="modal-body">
+                            <input
+                              type="hidden"
+                              id="postId"
+                              value="<%= post.id %>"
+                            />
+                            <input
+                              type="hidden"
+                              id="userId"
+                              value="<%= user.id %>"
+                            />
+                            <div class="form-group">
+                              <label for="title1">Title</label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                id="title1"
+                                name="title"
+                                value="<%= post.title %>"
+                                required
+                              />
+                            </div>
+                            <div class="form-group">
+                              <label for="content1">Content</label>
+                              <textarea
+                                type="text"
+                                class="form-control"
+                                id="content1"
+                                name="content"
+                                rows="20"
+                                required
+                              >
+<%= post.content %></textarea
+                              >
+                            </div>
+                            <div class="form-group">
+                              <label for="postPicture1">Post picture</label>
+                              <input
+                                type="file"
+                                class="form-control"
+                                id="postPicture1"
+                                name="postPicture"
+                                value="<%= post.postPicture %>"
+                                required
+                              />
+                            </div>
+                          </div>
+                          <div
+                            class="modal-footer border-top-0 d-flex justify-content-center"
+                          >
+                            <button
+                              type="submit"
+                              onclick="updatePost()"
+                              class="btn btn-warning"
+                            >
+                              Update
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <% } %> <% } %>
+                </li>
+              </ul>
+              <hr />
+            </div>
+            <div class="p-3">
+              <p><%= post.content %></p>
+              <p>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Soluta
+                consequuntur sit ipsum nisi possimus. Nobis velit ad repudiandae
+                odio eligendi officia, eveniet, accusamus aperiam recusandae
+                voluptas eaque pariatur inventore quae labore hic qui itaque
+                animi! Repudiandae optio at excepturi expedita pariatur minus
+                sapiente deleniti velit debitis sequi corporis, iusto, sed qui
+                reprehenderit quod, consequuntur inventore deserunt? Esse quam
+                nisi odio, ipsam inventore culpa obcaecati dolorum nostrum
+                dolores illo eveniet error mollitia, excepturi veniam!
+                Perferendis qui quibusdam, iure quae tempora aut veniam quasi
+                neque repellat sapiente culpa repudiandae, dolorem laudantium
+                deleniti suscipit recusandae alias ratione eveniet quo adipisci
+                incidunt deserunt saepe? Quaerat velit cupiditate perspiciatis
+                atque voluptates ab voluptas dolorum! Sed, accusantium
+                obcaecati. Ex ut dignissimos atque blanditiis inventore enim id
+                nam deserunt. Explicabo ea eum ratione temporibus. Quisquam, a
+                optio? Exercitationem molestias tempore quam veritatis eligendi
+                quas temporibus dolor sapiente aperiam ad minima commodi hic
+                fugiat possimus, ipsa, doloremque consequatur, repellendus
+                dolorem! Necessitatibus, ipsum, enim animi perferendis deleniti
+                inventore mollitia aut iusto atque quis, ipsa quo nostrum
+                sapiente ab deserunt quos expedita? Deleniti, quasi. Nam eius
+                harum architecto voluptate tempora nostrum hic, tempore itaque
+                tenetur deserunt, sapiente facere quae magnam suscipit
+                blanditiis, soluta ab. Aut nesciunt eligendi sapiente. Enim,
+                architecto.
+              </p>
+            </div>
+            <!-- Card info -->
+          </div>
+        </div>
+
+        <% if (typeof user != 'undefined') { %>
+        <div class="p-3">
+          <h2>Comment</h2>
+          <div>
+            <form id="commentForm-<%= post.id %>">
+              <input type="hidden" name="id" value="<%= post.id %>" />
+              <textarea
+                id="commentTextarea-<%= post.id %>"
+                type="text"
+                name="content"
+                cols="100"
+                rows="3"
+                required
+              ></textarea
+              ><br />
+              <button
+                class="btn btn-warning"
+                type="submit"
+                onclick="createComment1('<%= post.id %>')"
+              >
+                Comment
+              </button>
+            </form>
+          </div>
+          <% comments.forEach(comment => { %>
+          <div
+            class="pt-3 left-indent-<%= comment.level %> <% if (comment.level === 1) { %> mt-4 <% } %>"
+          >
+            <% if (comment.level === 1) { %>
+            <hr />
+            <% } %>
+            <h5><%= comment.content %></h5>
+            <p class="m-0">User: <%= comment.name %></p>
+            <% if (typeof user != 'undefined') { %>
+            <button
+              id="likeComment-<%= comment.id %>-button"
+              style="border: 1px solid blue"
+              class="btn <% if (comment.isLiked == true) { %> btn-primary <% } else { %> btn-light <% } %>"
+              onclick="likeComment('<%= comment.post_id %>', '<%= comment.id %>')"
+            >
+              Like
+            </button>
+            <% } %>
+            <!-- <button class="btn btn-warning">Reply</button> -->
+            <span class="strong">Like: </span>
+            <span id="likeCount-<%= comment.id %>"
+              ><%= comment.like %></span
+            >
+            <!-- reply comment -->
+            <div class="pt-2">
+              <form id="replyForm-<%= comment.id %>">
+                <input
+                  type="hidden"
+                  name="commentId"
+                  value="<%= comment.id %>"
+                />
+                <textarea
+                  id="replyTextarea-<%= comment.id %>"
+                  type="text"
+                  name="content-"
+                  cols="100"
+                  rows="1"
+                  required
+                ></textarea
+                ><br />
+                <button
+                  class="btn btn-warning"
+                  type="submit"
+                  onclick="replyComment1('<%= comment.post_id %>', '<%= comment.id %>')"
+                >
+                  Reply
+                </button>
+              </form>
+            </div>
+            <!-- end reply comment -->
+          </div>
+          <% }) %>
+        </div>
+        <% } else { %>
+        <!-- <h2 class="my-5 text-center"><button class="border-0" onclick="login(<%= post.id %>)">Login</button> to see the comments</h2> -->
+        <% } %>
+      </div>
+    </main>
+    <script>
+      function login(postId) {
+        req.postId = postId;
+        res.redirect('auth/login');
+      }
+      async function likeComment(postId, commentId) {
+        try {
+          console.log("postId: " + postId);
+          console.log("commentId: " + commentId);
+          const likeCountElement = document.getElementById(
+            `likeCount-${commentId}`
+          );
+          const button = document.getElementById(
+            `likeComment-${commentId}-button`
+          );
+          const likeCountBefore = likeCountElement.textContent;
+          button.classList.add("disabled");
+
+          // Make an AJAX request to the server to update the like count
+          const response = await fetch(
+            `/api/posts/${postId}/comments/${commentId}/like/comment`,
+            {
+              method: "PATCH",
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to update like count - comment");
+          }
+
+          console.log("updatedComment");
+          const updatedComment = await response.json();
+          console.log(updatedComment);
+
+          // Update the like count displayed on the webpage
+          likeCountElement.textContent =
+            updatedComment.data.comment.like_count;
+          if (
+            updatedComment.data.comment.like_count > parseInt(likeCountBefore)
+          ) {
+            button.classList.add("btn-primary");
+            button.classList.remove("btn-light");
+          } else {
+            button.classList.add("btn-light");
+            button.classList.remove("btn-primary");
+          }
+          button.classList.remove("disabled");
+          // document.location.reload();
+
+        } catch (error) {
+          console.log("error");
+          console.error(error);
+        }
+      }
+
+      async function likePost(postId) {
+        try {
+          const button = document.getElementById("likePost-button");
+          const likeCountElement = document.getElementById(
+            `likeCount-${postId}`
+          );
+          const likeCountBefore = likeCountElement.textContent;
+          button.classList.add("disabled");
+          console.log("postId: " + postId);
+
+          // Make an AJAX request to the server to update the like count
+          const response = await fetch(`/api/posts/${postId}/like/post`, {
+            method: "PATCH",
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to update like count - post");
+          }
+
+          console.log("updatedPost");
+          const updatedPost = await response.json();
+          console.log(updatedPost);
+
+          // Update the like count displayed on the webpage
+          console.log("likeCountBefore", likeCountBefore);
+          console.log("updatedPost.data.post", updatedPost.data.post);
+          console.log("updatedPost.data.post.like_count", updatedPost.data.post.like_count);
+          console.log("updatedPost.data.post.like_post > parseInt(likeCountBefore)", updatedPost.data.post.like_post > parseInt(likeCountBefore));
+          likeCountElement.textContent = updatedPost.data.post.like_count;
+          if (updatedPost.data.post.like_count > parseInt(likeCountBefore)) {
+            button.classList.add("btn-primary");
+            button.classList.remove("btn-light");
+          } else {
+            button.classList.add("btn-light");
+            button.classList.remove("btn-primary");
+          }
+          button.classList.remove("disabled");
+          // document.location.reload();
+        } catch (error) {
+          console.log("error");
+          console.error(error);
+        }
+      }
+
+      async function updatePost() {
+        const form = document.getElementById("postForm");
+        const postId = document.getElementById("postId").value;
+        const userId = document.getElementById("userId").value;
+
+        form.addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent the default form submission
+
+          const formData = new FormData(form);
+          const fileInput = document.getElementById("profilePicture1");
+          // const data = Object.fromEntries(formData.entries());
+
+          // const requestOptions = {
+          //   method: "PATCH",
+          //   headers: { "Content-Type": "application/json" },
+          //   body: JSON.stringify(data),
+          // };
+
+          // if (fileInput.files.length > 0) {
+          //   formData.append("image", fileInput.files[0]);
+          // }
+          const requestOptions = {
+            method: "PATCH",
+            body: formData,
+          };
+
+          fetch(`/api/posts/${postId}`, requestOptions)
+            .then((response) => response.json())
+            .then((result) => {
+              console.log("Resource updated:", result);
+              // Perform any necessary actions after successful update
+              location.reload();
+            })
+            .catch((error) => {
+              console.error("Error updating resource:", error);
+              // Handle any error that occurred during update
+            });
+        });
+      }
+
+      async function createComment1(postId) {
+        console.log("Creating comment");
+        const form = document.getElementById(`commentForm-${postId}`);
+        const textarea = document.getElementById(`commentTextarea-${postId}`);
+
+        form.addEventListener("submit", async function (event) {
+          event.preventDefault();
+          console.log("form: ", form);
+
+          const content = textarea.value;
+
+          console.log("action:", content);
+          const response = await fetch(`/api/posts/${postId}/comments`, {
+            method: "POST",
+            body: JSON.stringify({ content }),
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          });
+          if (!response.ok) {
+            throw new Error("Failed to add new comment");
+          }
+          document.location.reload();
+        });
+      }
+
+      async function replyComment1(postId, commentId) {
+        const form = document.getElementById(`replyForm-${commentId}`);
+        const textarea = document.getElementById(`replyTextarea-${commentId}`);
+
+        form.addEventListener("submit", async function (event) {
+          event.preventDefault();
+          console.log("form: ", form);
+
+          const content = textarea.value;
+
+          console.log("action:", content);
+          const response = await fetch(
+            `/api/posts/${postId}/comments/${commentId}`,
+            {
+              method: "POST",
+              body: JSON.stringify({ content }),
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (!response.ok) {
+            throw new Error("Failed to add new reply comment");
+          }
+          document.location.reload();
+        });
+      }
+    </script>
+    <footer class="main-footer"><%- include('partials/_footer.ejs'); %></footer>
+  </body>
+</html>

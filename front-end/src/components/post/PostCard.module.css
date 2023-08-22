@@ -1,0 +1,55 @@
+.card {
+  border: 0px;
+  color: black;
+}
+
+.cardBody {
+  padding: 1rem 0;
+}
+.cardBody > * {
+	text-align: left;
+	margin: 0;
+	padding: 0.25rem 0;
+}
+
+.cardBody a {
+	text-decoration: none;
+	color: black;
+	font-weight: 700;
+}
+
+.avatarImg {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.avatarBox {
+  display: flex;
+  align-items: center;
+}
+
+.cardInfo {
+  align-items: center;
+  /* justify-content: space-between; */
+}
+
+.cardInfo li {
+  padding: 0.25rem;
+}
+
+.textLimit {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.navLink {
+  padding-left: 0;
+}
+
+.navItem .author {
+  margin-left: 1rem;
+}

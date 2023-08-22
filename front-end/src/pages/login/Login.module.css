@@ -1,0 +1,62 @@
+.body {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: url("https://img.freepik.com/free-vector/gradient-3d-shapes-background_52683-11213.jpg?w=1380&t=st=1685691058~exp=1685691658~hmac=effba014c40f6018a8380588fc8d76e70dff9fa018c2a00de0672cbb0c2c8949")
+    no-repeat center center fixed;
+  background-size: cover;
+}
+
+.loginContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 400px;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.959);
+}
+
+.loginContainer h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.loginContainer input[type="text"],
+.loginContainer input[type="password"] {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.loginContainer button {
+  width: 100%;
+  padding: 10px;
+  background-color: #5e4cafe0;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 16px;
+}
+.loginContainer .registerLink,
+.loginContainer .homeLink {
+  display: flex;
+  text-align: center;
+  margin-top: 10px;
+  justify-content: space-evenly;
+}
+
+.loginContainer .registerLink a,
+.loginContainer .homeLink a {
+  color: #5e4cafe0;
+  text-decoration: none;
+}

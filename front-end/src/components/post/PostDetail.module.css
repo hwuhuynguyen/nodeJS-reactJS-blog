@@ -1,0 +1,9 @@
+.navItem {
+  align-items: center;
+  padding-right: 10px;
+  display: flex;
+}
+
+ul {
+  margin: 16px 0;
+}
