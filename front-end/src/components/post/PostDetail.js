@@ -3,22 +3,23 @@ import classes from "./PostDetail.module.css";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/context";
 import { useNavigate } from "react-router-dom";
+import { DEFAULT_POST_IMAGE, ROOT_URL } from "../../constants";
 
 const PostDetail = ({ post }) => {
-  const _URL = "http://localhost:3001";
   const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
 
   const [like, setLike] = useState(post.like_count);
   const [isLiked, setIsLiked] = useState(post.isLiked);
+  
   useEffect(()=> {
     setLike(post.like_count);
     setIsLiked(post.isLiked);
-  }, [post.isLiked, post.like_count]);
+  }, [post.isLiked, post.like_count, user, navigate]);
 
   const handlePostImageError = (event) => {
-    event.target.src = _URL + "/img/default-post-picture.png";
+    event.target.src = ROOT_URL + DEFAULT_POST_IMAGE;
   };
 
   const formatDate = (date) => {
@@ -29,10 +30,10 @@ const PostDetail = ({ post }) => {
   const handleLikePost = async (event) => {
     const jwt = localStorage.getItem("jwt");
     const response = await fetch(
-      `http://localhost:3001/api/posts/${post.id}/like/post`,
+      `${ROOT_URL}/api/posts/${post.id}/like/post`,
       {
         headers: {
-          Authorization: "Bearer " + jwt,
+          "Authorization": "Bearer " + jwt,
         },
         method: "PATCH",
         
@@ -59,7 +60,7 @@ const PostDetail = ({ post }) => {
           <div>
             <img
               className="card-img"
-              src={_URL + post.postPicture}
+              src={ROOT_URL + post.postPicture}
               alt=""
               onError={handlePostImageError}
             />
@@ -82,7 +83,7 @@ const PostDetail = ({ post }) => {
         <ul className="nav card-info d-flex">
           <li className={classes.navItem}>
             <span className="strong">Like: </span>
-            <span id="likeCount-<%= post.id %>"> {like ? like : 0}</span>
+            <span> {like ? like : 0}</span>
           </li>
           <li className={classes.navItem}>
             <button
@@ -92,7 +93,7 @@ const PostDetail = ({ post }) => {
             >
               Like
             </button>
-            {user.id === post.author && <button
+            {user?.id === post.author && <button
               id="updatePost-button"
               className="btn btn-warning ms-3"
               onClick={handleUpdatePost}

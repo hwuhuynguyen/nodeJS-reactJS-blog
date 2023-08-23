@@ -3,6 +3,7 @@ import { AuthContext } from "../../../context/context";
 import { useNavigate } from "react-router-dom";
 import MainNavigation from "../../../components/navigation/MainNavigation";
 import ProfileForm from "../../../components/profile/ProfileForm";
+import { ROOT_URL } from "../../../constants";
 
 const UpdateAboutPage = () => {
   const authCtx = useContext(AuthContext);
@@ -16,7 +17,7 @@ const UpdateAboutPage = () => {
 
     const jwt = localStorage.getItem('jwt');
 
-    fetch("http://localhost:3001/api/v1/dashboard", {
+    fetch(`${ROOT_URL}/api/v1/dashboard`, {
       headers: {
         'Authorization': 'Bearer ' + jwt
       }

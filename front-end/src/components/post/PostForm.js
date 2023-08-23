@@ -1,8 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/context";
+import Swal from "sweetalert2";
+import { ROOT_URL } from "../../constants";
 
-const PostForm = ({post}) => {
+const PostForm = ({ post }) => {
   const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
@@ -10,7 +12,7 @@ const PostForm = ({post}) => {
   const [content, setContent] = useState();
   const [file, setFile] = useState();
 
-  useEffect(()=> {
+  useEffect(() => {
     if (post) {
       setTitle(post.title);
       setContent(post.content);
@@ -31,7 +33,7 @@ const PostForm = ({post}) => {
 
     // Append the image file
     if (file) {
-      console.log("FILE: ", file.name)
+      console.log("FILE: ", file.name);
       const filename = file.name;
       formData.append("name", filename);
       formData.append("postPicture", file);
@@ -52,49 +54,39 @@ const PostForm = ({post}) => {
       console.log("Form values: ", value);
     }
 
-    if (!post) {
-      try {
-        const response = await fetch("http://localhost:3001/api/posts", {
-          method: "POST",
-          body: formData, // Use the FormData object
+    try {
+      const response = await fetch(
+        `${ROOT_URL}/api/posts${post ? `/${post.id}` : ""}`,
+        {
+          method: post ? "PATCH" : "POST",
+          body: formData,
           headers: {
             Authorization: "Bearer " + jwt,
           },
-        });
-  
-        if (response.ok) {
-          console.log("Form submitted successfully");
-        } else {
-          console.error("Form submission failed");
-          console.log(response);
         }
-        navigate('/posts');
-      } catch (error) {
-        console.error("Error submitting form:", error);
-      }
-    } else {
-      try {
-        const response = await fetch(`http://localhost:3001/api/posts/${post.id}`, {
-          method: "PATCH",
-          body: formData, // Use the FormData object
-          headers: {
-            Authorization: "Bearer " + jwt,
-          },
-        });
-  
-        if (response.ok) {
-          console.log("Form submitted successfully");
-        } else {
-          console.error("Form submission failed");
-          console.log(response);
-        }
-        navigate(`/posts/${post.id}`);
-      } catch (error) {
-        console.error("Error submitting form:", error);
-      }
-    }
+      );
 
-    
+      if (response.ok) {
+        console.log("Form submitted successfully");
+        const successMessage = post
+          ? "Updated your post successfully!"
+          : "Created new post successfully!";
+        Swal.fire({
+          title: "Success!",
+          text: successMessage,
+          icon: "success",
+          timer: 2000,
+        });
+
+        const targetRoute = post ? `/posts/${post.id}` : "/posts";
+        navigate(targetRoute);
+      } else {
+        console.error("Form submission failed");
+        console.log(response);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   return (
@@ -102,7 +94,9 @@ const PostForm = ({post}) => {
       style={{ width: "50%" }}
       className="d-flex flex-column justify-content-center m-auto"
     >
-      <p className="h1 my-4 mx-auto">{!post ? "Create new post" : "Update post"}</p>
+      <p className="h1 my-4 mx-auto">
+        {!post ? "Create new post" : "Update post"}
+      </p>
       <form encType="multipart/form-data" onSubmit={handleSubmitForm}>
         <div className="mb-3">
           <label htmlFor="title" className="form-label">
@@ -149,7 +143,9 @@ const PostForm = ({post}) => {
           <Link to="/posts">
             <button className="btn btn-primary">Back to list</button>
           </Link>
-          <button className="btn btn-primary">{!post ? "Create" : "Update"}</button>
+          <button className="btn btn-primary">
+            {!post ? "Create" : "Update"}
+          </button>
         </div>
       </form>
     </div>

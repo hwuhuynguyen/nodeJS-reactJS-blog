@@ -1,15 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./Register.module.css";
 import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { ROOT_URL } from "../../constants";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const [dob, setDob] = useState();
+  const [dateOfBirth, setDateOfBirth] = useState();
   const [gender, setGender] = useState();
   const [file, setFile] = useState();
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    const isAuthenticated = localStorage.getItem("isAuthenticated");
+    if (isAuthenticated && user) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   const handleSubmitForm = async (e) => {
     e.preventDefault();
@@ -18,27 +28,25 @@ const RegisterPage = () => {
       username,
       email,
       password,
-      dob,
+      dateOfBirth,
       gender,
     };
 
-    // Create a FormData object
     const formData = new FormData();
 
     // Append the image file
     if (file) {
-      console.log("FILE: ", file.name);
-      const filename = file.name;
-      formData.append("name", filename);
+      // console.log("FILE: ", file.name);
+      // const filename = file.name;
       formData.append("profilePicture", file);
-      newUser.img = filename;
+      // newUser.img = filename;
     }
 
     // Append additional data to FormData
     formData.append("name", newUser.username);
     formData.append("email", newUser.email);
     formData.append("password", newUser.password);
-    formData.append("dob", newUser.dob);
+    formData.append("dateOfBirth", newUser.dateOfBirth);
     formData.append("gender", newUser.gender);
 
     console.log(formData);
@@ -50,18 +58,31 @@ const RegisterPage = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3001/api/auth/register", {
+      const response = await fetch(`${ROOT_URL}/api/auth/register`, {
         method: "POST",
-        body: formData, // Use the FormData object
+        body: formData,
       });
 
       if (response.ok) {
         console.log("Form submitted successfully");
+        Swal.fire({
+          title: "Success!",
+          text: "You registered new account!",
+          icon: "success",
+          timer: 2000,
+        });
+        navigate("/auth/login");
       } else {
         console.error("Form submission failed");
-        console.log(response);
+        const err = await response.json();
+        Swal.fire({ 
+          title: "Error!",
+          html: err.messages?.join('<br>'),
+          icon: "error",
+          timer: 2000,
+          text: err.message
+        });
       }
-      navigate("/posts");
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -97,7 +118,7 @@ const RegisterPage = () => {
             <input
               type="date"
               name="dateOfBirth"
-              onChange={(e) => setDob(e.target.value)}
+              onChange={(e) => setDateOfBirth(e.target.value)}
               required
             />
             <br />

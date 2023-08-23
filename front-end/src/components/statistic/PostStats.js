@@ -1,11 +1,9 @@
 import { Link } from "react-router-dom";
+import { ROOT_URL, DEFAULT_POST_IMAGE } from "../../constants";
 
 const PostStats = ({ title, data }) => {
-  console.log(data);
-  const _URL = "http://localhost:3001";
-
   const handlePostImageError = (event) => {
-    event.target.src = _URL + "/img/default-post-picture.png";
+    event.target.src = ROOT_URL + DEFAULT_POST_IMAGE;
   };
 
   function formatDate(date) {
@@ -23,20 +21,22 @@ const PostStats = ({ title, data }) => {
               {post.postPicture.startsWith("/img") && (
                 <div>
                   <img
-                    style={{width: "100%", height: "auto"}}
+                    style={{ width: "100%", height: "auto" }}
                     className="card-img"
-                    src={_URL + post.postPicture}
+                    src={ROOT_URL + post.postPicture}
                     alt=""
                     onError={handlePostImageError}
                   />
                 </div>
               )}
             </div>
-            <div className="col-8" style={{textAlign: "left"}}>
+            <div className="col-8" style={{ textAlign: "left" }}>
               <h6>
                 <Link to={`/posts/${post.id}`}>{post.title}</Link>
               </h6>
-              <div className="small">{formatDate(new Date(post.createdAt))}</div>
+              <div className="small">
+                {formatDate(new Date(post.createdAt))}
+              </div>
             </div>
           </div>
         );

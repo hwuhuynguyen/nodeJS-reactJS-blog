@@ -1,10 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import PageContent from "../../components/shared/PageContent";
 import Post from "../../components/post/PostCard";
 import MainNavigation from "../../components/navigation/MainNavigation";
 import PostStats from "../../components/statistic/PostStats";
 import UserStats from "../../components/statistic/UserStats";
+import { ROOT_URL } from "../../constants";
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
@@ -13,14 +13,12 @@ const HomePage = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const res = await fetch("http://localhost:3001/api/v1/home-page");
+      const res = await fetch(`${ROOT_URL}/api/v1/home-page`);
       const resData = await res.json();
       setPosts(resData.data.posts);
       setRecentPosts(resData.data.recentPosts);
       setActiveUsers(resData.data.activeUsers);
       console.log(resData.data);
-      console.log(recentPosts);
-      console.log(activeUsers);
     };
     fetchPosts();
   }, []);
@@ -41,9 +39,6 @@ const HomePage = () => {
             <div
               className="col-3"
             >
-              {/* {recentPosts.map((recent) => {
-                return <Post key={recent.id} post={recent} />;
-              })} */}
               <PostStats title={'Recent posts'} data={recentPosts} />
               <hr />
               <UserStats title={'Most active users'} data={activeUsers} />

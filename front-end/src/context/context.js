@@ -1,6 +1,7 @@
 import { createContext, useReducer } from "react";
 import { authReducer } from "./auth-reducer";
 import axios from "axios";
+import { LOGIN_FAILURE, LOGIN_SUCCESS, LOGOUT, ROOT_URL } from "../constants";
 
 const INITIAL_STATE = {
   user: JSON.parse(localStorage.getItem("user")) || null,
@@ -17,37 +18,34 @@ export const AuthContextProvider = (props) => {
 
   const loginHandler = async (email, password) => {
     try {
-      const res = await axios.post(`http://localhost:3001/api/auth/login`, {
+      const res = await axios.post(`${ROOT_URL}/api/auth/login`, {
         email: email,
         password: password,
       });
 
-      dispatch({ type: "LOGIN_SUCCESS", payload: res.data.data.user });
+      dispatch({ type: LOGIN_SUCCESS, payload: res.data.data.user });
 
       localStorage.setItem("jwt", (res.data.token));
       localStorage.setItem("user", JSON.stringify(res.data.data.user));
       localStorage.setItem("isAuthenticated", true);
 
-      // res.data && window.location.replace("/");
     } catch (err) {
-      dispatch({ type: "LOGIN_FAILURE" });
+      dispatch({ type: LOGIN_FAILURE });
       console.log("error: ", err);
     }
   }
 
   const logoutHandler = async () => {
     try {
-      await axios.get(`http://localhost:3001/api/auth/logout`);
+      await axios.get(`${ROOT_URL}/api/auth/logout`);
 
-      dispatch({ type: "LOGOUT" });
+      dispatch({ type: LOGOUT });
       localStorage.removeItem("jwt");
       localStorage.removeItem("user");
       localStorage.removeItem("isAuthenticated");
-      console.log('ok');
-      // res.data && window.location.replace("/");
       
     } catch (err) {
-      dispatch({ type: "LOGIN_FAILURE" });
+      dispatch({ type: LOGIN_FAILURE });
       console.log("error: ", err);
     }
   }

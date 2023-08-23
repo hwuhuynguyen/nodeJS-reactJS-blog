@@ -57,25 +57,31 @@ exports.signup = catchAsync(async (req, res, next) => {
 			}
 
 			try {
-			const checkUser = await User.build({
-				email: req.body.email,
-				password: req.body.password,
-				gender: req.body.gender,
-				dateOfBirth: req.body.dateOfBirth,
-			});
-			console.log("CHECK USER: ");
-			console.log(checkUser.name);
-			console.log(checkUser.email);
-		} catch (err) {
-			console.log("error rui");
-			console.log(err);
-		}
+				const checkUser = await User.build({
+					name: req.body.name,
+					email: req.body.email,
+					password: req.body.password,
+					gender: req.body.gender,
+					dateOfBirth: req.body.dateOfBirth,
+				});
+				console.log("Before validation");
+				// Trigger validations and attempt to save to the database
+				await checkUser.validate();
+				console.log("After validation");
+				console.log("no error?");
+			} catch (validationError) {
+				// Extract and format validation error messages
+				const errorMessages = validationError.errors.map(
+					(error) => error.message
+				);
+				console.log(errorMessages);
 
+				res.status(400).json({
+					error: "Validation Error",
+					messages: errorMessages,
+				});
 
-			const existingUser = await userRepository.findUserByEmail(req.body.email);
-
-			if (existingUser) {
-				throw new Error("Email address already in use!");
+				return; // Stop further execution
 			}
 
 			let dataUser = {

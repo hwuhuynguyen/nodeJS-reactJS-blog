@@ -1,7 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import classes from "./Login.module.css";
-import { AuthContext } from '../../context/context';
+import { AuthContext } from "../../context/context";
+import Swal from "sweetalert2";
+import axios from "axios";
+import { LOGIN_FAILURE, LOGIN_SUCCESS, ROOT_URL } from "../../constants";
 
 function LoginPage() {
   const authCtx = useContext(AuthContext);
@@ -13,11 +16,10 @@ function LoginPage() {
   });
 
   useEffect(() => {
-    const user = localStorage.getItem('user');
-    const isAuthenticated = localStorage.getItem('isAuthenticated');
+    const user = localStorage.getItem("user");
+    const isAuthenticated = localStorage.getItem("isAuthenticated");
     if (isAuthenticated && user) {
-      navigate('/');
-      // window.location.replace('/');
+      navigate("/");
     }
   }, [navigate]);
 
@@ -30,10 +32,37 @@ function LoginPage() {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(formData.email);
-    console.log(formData.password);
-    authCtx.onLogin(formData.email, formData.password);
-    navigate('/');
+    try {
+      const res = await axios.post(`${ROOT_URL}/api/auth/login`, {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      authCtx.dispatch({ type: LOGIN_SUCCESS, payload: res.data.data.user });
+
+      localStorage.setItem("jwt", (res.data.token));
+      localStorage.setItem("user", JSON.stringify(res.data.data.user));
+      localStorage.setItem("isAuthenticated", true);
+
+      Swal.fire({
+        title: "Success!",
+        text: "Login success!",
+        icon: "success",
+        timer: 1500
+      });
+      navigate("/");
+
+    } catch (err) {
+      authCtx.dispatch({ type: LOGIN_FAILURE });
+      Swal.fire({
+        title: "Login failed!",
+        text: "Incorrect username or password!",
+        icon: "error",
+        timer: 1500
+      });
+    }
+
+    
   };
 
   return (

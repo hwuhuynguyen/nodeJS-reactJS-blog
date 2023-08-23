@@ -18,7 +18,7 @@ import UpdateAboutPage from "./pages/about/update/UpdateAboutPage";
 function App() {
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
-  console.log("checking user...", user);
+  console.log("Checking user...", user);
 
   return (
     <React.Fragment>

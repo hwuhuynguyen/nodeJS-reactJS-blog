@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/context";
 import Profile from "../../../components/profile/Profile";
 import Post from "../../../components/post/PostCard";
+import { ROOT_URL } from "../../../constants";
 
 const AboutPage = () => {
   const authCtx = useContext(AuthContext);
@@ -15,18 +16,16 @@ const AboutPage = () => {
     if (!user) {
       navigate("/auth/login");
     }
-    console.log("ok");
 
     const jwt = localStorage.getItem('jwt');
 
-    fetch("http://localhost:3001/api/v1/dashboard", {
+    fetch(`${ROOT_URL}/api/v1/dashboard`, {
       headers: {
         'Authorization': 'Bearer ' + jwt
       }
     })
       .then((response) => response.json())
       .then((response) => {
-        console.log(response);
         setMyPosts(response.myPosts);
       })
       .catch((err) => console.log(err));

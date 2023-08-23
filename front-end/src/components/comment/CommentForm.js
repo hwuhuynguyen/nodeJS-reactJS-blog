@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import Comment from "./Comment";
 import "./CommentForm.css";
 import { AuthContext } from "../../context/context";
+import { ROOT_URL } from "../../constants";
 
 const CommentForm = ({ comments, post }) => {
   const inputRef = useRef(null);
@@ -18,12 +19,10 @@ const CommentForm = ({ comments, post }) => {
     event.preventDefault();
     const content = inputRef.current.value;
     const jwt = localStorage.getItem("jwt");
-    // console.log(jwt);
-    // console.log(user.id, post.id, content);
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/posts/${post.id}/comments`,
+        `${ROOT_URL}/api/posts/${post.id}/comments`,
         {
           method: "POST",
           body: JSON.stringify({
@@ -33,7 +32,7 @@ const CommentForm = ({ comments, post }) => {
           }),
           headers: {
             "Content-Type": "application/json", // Set the content type header
-            Authorization: "Bearer " + jwt,
+            "Authorization": "Bearer " + jwt,
           },
         }
       );
@@ -43,10 +42,10 @@ const CommentForm = ({ comments, post }) => {
       }
       const data = await response.json();
 
-      console.log(data.data[0]);
+      const newComment = data.data[0];
+      newComment.level = 1;
+
       setCommentList((prevCommentList) => {
-        console.log("Updating comment list");
-        console.log([...prevCommentList, data.data[0]]);
         return [data.data[0], ...prevCommentList];
       });
       inputRef.current.value = "";
@@ -54,19 +53,17 @@ const CommentForm = ({ comments, post }) => {
       console.log("error: ", err);
     }
   };
-  // -----
+
   const handleReply = (commentIndex, replyText) => {
     setCommentList((prevCommentList) => {
       const newCommentList = [...prevCommentList];
       
       // Insert the new commentText at the specified index
       newCommentList.splice(commentIndex + 1, 0, replyText);
-      console.log(replyText);
       return newCommentList;
     });
   
   };
-  // -----
   return (
     <div>
       <h1>Comment</h1>
@@ -91,7 +88,6 @@ const CommentForm = ({ comments, post }) => {
       {commentList.map((comment, index) => (
         <Comment
           key={index}
-          // key={comment.id}
           comment={comment}
           post={post}
           onReply={(replyText) => handleReply(index, replyText)}

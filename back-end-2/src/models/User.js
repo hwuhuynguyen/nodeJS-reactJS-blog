@@ -16,19 +16,28 @@ const User = sequelize.define(
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: {
-        args: true,
-        msg: 'Email address already in use',
-      },
+      unique: true,
       validate: {
         isEmail: {
-          msg: 'Invalid email format',
+          msg: 'Please enter a valid email address',
+        },
+        async isEmailUnique(email) {
+          const existingUser = await User.findOne({ where: { email } });
+          if (existingUser) {
+            throw new Error('Email address is already in use');
+          }
         },
       },
     },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        len: {
+          args: 8, 
+          msg: 'Password must be at least 8 characters!'
+        }
+      }
     },
     gender: {
       type: DataTypes.STRING,

@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/context";
+import Swal from "sweetalert2";
+import { ROOT_URL, UPDATE_USER } from "../../constants";
 
 const ProfileForm = () => {
   const navigate = useNavigate();
@@ -12,8 +14,13 @@ const ProfileForm = () => {
   const [file, setFile] = useState();
 
   useEffect(() => {
-    if (!user) navigate("/auth/login");
-
+    console.log("Enter");
+    if (!user) {
+      navigate("/auth/login");
+      return;
+    }
+    console.log("?????");
+    console.log(user);
     setName(user.name);
     setGender(user.gender);
     setDateOfBirth(user.dateOfBirth);
@@ -34,14 +41,15 @@ const ProfileForm = () => {
 
     // Append the image file
     if (file) {
-      console.log("FILE: ", file.name);
-      const filename = file.name;
-      formData.append("fileName", filename);
+      // console.log("FILE: ", file.name);
+      // const filename = file.name;
+      // formData.append("fileName", filename);
       formData.append("profilePicture", file);
-      updateUser.profilePicture = filename;
+      // updateUser.profilePicture = filename;
     }
 
     // Append additional data to FormData
+    formData.append("id", updateUser.id);
     formData.append("name", updateUser.name);
     formData.append("gender", updateUser.gender);
     formData.append("dateOfBirth", updateUser.dateOfBirth);
@@ -56,30 +64,33 @@ const ProfileForm = () => {
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:3001/api/users/${user.id}`,
-        {
-          method: "PATCH",
-          body: formData, // Use the FormData object
-          headers: {
-            Authorization: "Bearer " + jwt,
-          },
-        }
-      );
+      const response = await fetch(`${ROOT_URL}/api/users/${user.id}`, {
+        method: "PATCH",
+        body: formData, // Use the FormData object
+        headers: {
+          Authorization: "Bearer " + jwt,
+        },
+      });
 
       if (response.ok) {
         console.log("Form submitted successfully");
         const data = await response.json();
-        console.log(data.data[0]);
 
-        const newUser = data.data[0];
-        authCtx.dispatch({type:"UPDATE_USER", payload: (newUser)});
+        const newUser = data.data;
+        authCtx.dispatch({ type: UPDATE_USER, payload: newUser });
         localStorage.setItem("user", JSON.stringify(newUser));
+
+        Swal.fire({
+          title: "Success!",
+          text: "Updated personal information successfully!",
+          icon: "success",
+          timer: 2000,
+        });
       } else {
         console.error("Form submission failed");
         console.log(response);
       }
-      navigate('/about');
+      navigate("/about");
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -152,7 +163,6 @@ const ProfileForm = () => {
                 id="profilePicture1"
                 name="profilePicture"
                 onChange={(e) => setFile(e.target.files[0])}
-                required
               />
             </div>
           </div>

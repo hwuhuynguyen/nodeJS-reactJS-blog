@@ -2,17 +2,15 @@ import React from "react";
 import classes from "./PostCard.module.css";
 import { Link } from "react-router-dom";
 import dateFormat from "dateformat";
+import { DEFAULT_AVATAR_IMAGE, DEFAULT_POST_IMAGE, ROOT_URL } from "../../constants";
 
 function Post({ post, col }) {
-  console.log(post);
-  const _URL = "http://localhost:3001";
-
   const handlePostImageError = (event) => {
-    event.target.src = _URL + "/img/default-post-picture.png";
+    event.target.src = ROOT_URL + DEFAULT_POST_IMAGE;
   };
 
   const handleAvatarImageError = (event) => {
-    event.target.src = _URL + "/img/default-avatar.png";
+    event.target.src = ROOT_URL + DEFAULT_AVATAR_IMAGE;
   };
 
   return (
@@ -23,7 +21,7 @@ function Post({ post, col }) {
             <div>
               <img
                 className="card-img"
-                src={_URL + post.postPicture}
+                src={ROOT_URL + post.postPicture}
                 alt=""
                 onError={handlePostImageError}
               />
@@ -43,7 +41,7 @@ function Post({ post, col }) {
                     <img
                       // style={aspect-ratio: 5/4}
                       className={classes.avatarImg}
-                      src={_URL + post.profilePicture}
+                      src={ROOT_URL + post.profilePicture}
                       alt=""
                       onError={handleAvatarImageError}
                     />
@@ -58,16 +56,18 @@ function Post({ post, col }) {
               • {dateFormat(post.createdAt, "mmmm dS, yyyy")}
             </li>
             <li className={classes.navItem}>
-            <span>•  </span> 
+              <span>• </span>
               <span>
                 <i className="bi bi-hand-thumbs-up"></i>
-              </span> {post.like_count} 
+              </span>{" "}
+              {post.like_count}
             </li>
             <li className={classes.navItem}>
-              <span>•  </span> 
+              <span>• </span>
               <span>
                 <i className="bi bi-chat-right"></i>
-              </span> {post.comment_count} 
+              </span>{" "}
+              {post.comment_count}
             </li>
           </ul>
         </div>

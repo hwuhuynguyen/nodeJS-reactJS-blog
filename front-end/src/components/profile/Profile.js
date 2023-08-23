@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { DEFAULT_AVATAR_IMAGE, ROOT_URL } from "../../constants";
 
 const Profile = ({ user }) => {
   const navigate = useNavigate();
-  const _URL = "http://localhost:3001";
 
   const handleAvatarImageError = (event) => {
-    event.target.src = _URL + "/img/default-avatar.png";
+    event.target.src = ROOT_URL + DEFAULT_AVATAR_IMAGE;
   };
 
   function formatDate(date) {
@@ -15,7 +15,6 @@ const Profile = ({ user }) => {
   }
 
   useEffect(() => {
-    console.log("ok", user);
     if (!user) navigate("/auth/login");
   }, [user, navigate]);
 
@@ -24,7 +23,7 @@ const Profile = ({ user }) => {
       <div className="col-4 px-5">
         <img
           style={{ width: "100%" }}
-          src={_URL + user?.profilePicture}
+          src={ROOT_URL + user?.profilePicture}
           alt=""
           onError={handleAvatarImageError}
         />

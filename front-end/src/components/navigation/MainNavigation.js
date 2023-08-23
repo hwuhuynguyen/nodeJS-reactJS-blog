@@ -3,21 +3,27 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import classes from "./MainNavigation.module.css";
 import { useContext } from "react";
 import { AuthContext } from "../../context/context";
+import Swal from "sweetalert2";
+import { LOGOUT } from "../../constants";
 
 function MainNavigation() {
   const authCtx = useContext(AuthContext);
-  const user = (authCtx.user);
+  const user = authCtx.user;
   const navigate = useNavigate();
 
   const logoutHandler = () => {
-    // authCtx.onLogout();
-    // console.log("logout");
-    authCtx.dispatch({type:"LOGOUT"});
+    authCtx.dispatch({ type: LOGOUT });
     localStorage.removeItem("jwt");
     localStorage.removeItem("user");
     localStorage.removeItem("isAuthenticated");
-    navigate('/');
-  }
+    Swal.fire({
+      title: "Success!",
+      text: "Logged out of your account successfully!",
+      icon: "success",
+      timer: 2000,
+    });
+    navigate("/");
+  };
   return (
     <div className={classes.container}>
       <header className={classes.header}>
@@ -73,13 +79,11 @@ function MainNavigation() {
         {user && (
           <div>
             <span>Hi, {user.name}</span>
-
-            {/* <Link to={"/auth/logout"}> */}
-              <button className={classes.button} onClick={logoutHandler}>Log Out</button>
-            {/* </Link> */}
+            <button className={classes.button} onClick={logoutHandler}>
+              Log Out
+            </button>
           </div>
         )}
-        {/* <NewsletterSignup /> */}
       </header>
     </div>
   );

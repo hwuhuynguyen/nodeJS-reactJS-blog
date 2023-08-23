@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import MainNavigation from "../../../components/navigation/MainNavigation";
 import PageContent from "../../../components/shared/PageContent";
 import Post from "../../../components/post/PostCard";
+import { ROOT_URL } from "../../../constants";
+import Swal from "sweetalert2";
 
 function PostsPage() {
   const [posts, setPosts] = useState([]);
@@ -12,9 +14,27 @@ function PostsPage() {
   const user = authCtx.user;
 
   useEffect(() => {
-    if (!user) navigate("/auth/login");
+    // if (!user) {
+    //   Swal.fire({
+    //     icon: 'error',
+    //     title: 'Oops...',
+    //     text: 'You need to login to access this function!',
+    //     footer: '<a href="/auth/login">Login</a>'
+    //   })
+    //   navigate("/");
+    // } else {
+    //   fetch(`${ROOT_URL}/posts`)
+    //     .then((response) => response.json())
+    //     .then((response) => {
+    //       setPosts(response.posts);
+    //     })
+    //     .catch((err) => console.log(err));
+    // }
 
-    fetch("http://localhost:3001/posts")
+    if (!user) {
+      navigate("/auth/login");
+    }
+    fetch(`${ROOT_URL}/posts`)
       .then((response) => response.json())
       .then((response) => {
         setPosts(response.posts);
@@ -53,7 +73,7 @@ function PostsPage() {
 export default PostsPage;
 
 export const loader = async () => {
-  const response = await fetch("http://localhost:3001/posts");
+  const response = await fetch(`${ROOT_URL}/posts`);
 
   if (!response.ok) {
     throw new Response(JSON.stringify({ message: "Could not fetch posts" }), {

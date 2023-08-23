@@ -4,6 +4,7 @@ import MainNavigation from "../../../components/navigation/MainNavigation";
 import PostDetail from "../../../components/post/PostDetail";
 import { AuthContext } from "../../../context/context";
 import CommentForm from "../../../components/comment/CommentForm";
+import { ROOT_URL } from "../../../constants";
 
 const PostDetailPage = () => {
   const params = useParams();
@@ -15,15 +16,19 @@ const PostDetailPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) navigate('/auth/login');
+    console.log('user: ' + user);
+    if (!user) {
+      navigate('/auth/login');
+      return;
+    }
     const fetchData = async () => {
       try {
         const jwt = localStorage.getItem("jwt");
         console.log("Bearer " + jwt);
-        console.log(`http://localhost:3001/api/v1/posts/${postId}`);
+        console.log(`${ROOT_URL}/api/v1/posts/${postId}`);
 
         const response = await fetch(
-          `http://localhost:3001/api/v1/posts/${postId}`,
+          `${ROOT_URL}/api/v1/posts/${postId}`,
           {
             headers: {
               Authorization: "Bearer " + jwt,
@@ -38,8 +43,6 @@ const PostDetailPage = () => {
         const data = await response.json();
         setPost(data.post);
         setComments(data.comments);
-        // console.log("ERROR: ", data.comments);
-        // data.comments.forEach(comment => console.log(comment.isLiked))
       } catch (error) {
         console.error("Error fetching post:", error);
       }
