@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('partials/_head.ejs'); %>
+    <title>User Profile</title>
+  </head>
+  <body>
+    <header><%- include('partials/_header-dashboard.ejs'); %></header>
+    <main>
+      <section class="main-content">
+        <div class="container my-4">
+          <div class="row py-4">
+            <div class="col-4 px-5">
+              <img
+                src="<%= user.profilePicture %>"
+                alt="Profile Picture"
+                style="width: 100%"
+              />
+            </div>
+            <div class="col-8">
+              <table class="table">
+                <tr>
+                  <td>
+                    <h3>Name:</h3>
+                  </td>
+                  <td>
+                    <h3><%= user.name %></h3>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <h3>Email:</h3>
+                  </td>
+                  <td>
+                    <h3><%= user.email %></h3>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <h3>Gender:</h3>
+                  </td>
+                  <td>
+                    <h3><%= user.gender %></h3>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <h3>Date of birth:</h3>
+                  </td>
+                  <td>
+                    <h3>
+                      <%= user.dateOfBirth.toLocaleDateString('en-US', { month:
+                      'long', day: 'numeric', year: 'numeric' }) %>
+                    </h3>
+                  </td>
+                </tr>
+                <!-- <tr>
+                  <td>
+                    <h3>Role:</h3>
+                  </td>
+                  <td>
+                    <h3><%= user.role %></h3>
+                  </td>
+                </tr> -->
+                <tr>
+                  <td>
+                    <h3>Action:</h3>
+                  </td>
+                  <td>
+                    <a
+                      class="btn btn-warning d-block"
+                      href="#"
+                      data-toggle="modal"
+                      data-target="#exampleModal"
+                      >Update</a
+                    >
+                    <!-- Begin modal -->
+                    <div
+                      class="modal fade"
+                      id="exampleModal"
+                      tabindex="-1"
+                      role="dialog"
+                      aria-labelledby="exampleModalLabel"
+                      aria-hidden="true"
+                    >
+                      <div
+                        class="modal-dialog modal-dialog-centered"
+                        role="document"
+                      >
+                        <div class="modal-content">
+                          <div class="modal-header border-bottom-0">
+                            <h5 class="modal-title" id="exampleModalLabel">
+                              Update user profile
+                            </h5>
+                            <button
+                              type="button"
+                              class="close"
+                              data-dismiss="modal"
+                              aria-label="Close"
+                            >
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <form
+                            id="userProfileForm"
+                            enctype="multipart/form-data"
+                          >
+                            <div class="modal-body">
+                              <input
+                                type="hidden"
+                                id="dateOfBirthRaw"
+                                value="<%= user.dateOfBirth %>"
+                              />
+                              <input
+                                type="hidden"
+                                id="userId"
+                                value="<%= user.id %>"
+                              />
+
+                              <div class="form-group">
+                                <label for="name1">Name</label>
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  id="name1"
+                                  name="name"
+                                  value="<%= user.name %>"
+                                />
+                              </div>
+                              <div class="form-group">
+                                <label for="gender1">Gender</label>
+                                <select
+                                  name="gender"
+                                  id="gender1"
+                                  class="form-control"
+                                  required
+                                >
+                                  <option value="" disabled selected>
+                                    Select your gender
+                                  </option>
+                                  <% if (user.gender === 'male') { %>
+                                  <option value="male" selected>Male</option>
+                                  <option value="female">Female</option>
+                                  <% } else { %>
+                                  <option value="male">Male</option>
+                                  <option value="female" selected>
+                                    Female
+                                  </option>
+                                  <% } %>
+                                </select>
+                              </div>
+                              <div class="form-group">
+                                <label for="dateOfBirth1">Date of birth</label>
+                                <input
+                                  type="date"
+                                  class="form-control"
+                                  id="dateOfBirth1"
+                                  name="dateOfBirth"
+                                />
+                              </div>
+                              <div class="form-group">
+                                <label for="profilePicture1"
+                                  >Profile picture</label
+                                >
+                                <input
+                                  type="file"
+                                  class="form-control"
+                                  id="profilePicture1"
+                                  value="<%= user.profilePicture %>"
+                                  required
+                                />
+                              </div>
+                            </div>
+                            <div
+                              class="modal-footer border-top-0 d-flex justify-content-center"
+                            >
+                              <button type="submit" class="btn btn-warning">
+                                Update
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End modal -->
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="row">
+            <h2><i class="bi bi-hourglass-top me-2"></i>My posts</h2>
+            <p>Let's check out what I've posted until now</p>
+
+            <% myPosts.forEach(function(post) { %>
+            <div class="col-sm-4">
+              <div class="card">
+                <a href="/view/posts/<%= post.id %>">
+                  <!-- Card img -->
+                  <% if (typeof post.postPicture != 'object') { %>
+                  <div>
+                    <img
+                      style="height: 320px"
+                      class="card-img"
+                      src="<%= post.postPicture %>"
+                    />
+                  </div>
+                  <% } else { %>
+                  <div>
+                    <img class="card-img" src="/img/default-avatar.png" />
+                  </div>
+                  <% } %>
+                </a>
+                <div class="card-body">
+                  <h4 class="card-title">
+                    <a href="/view/posts/<%= post.id %>"> <%= post.title %> </a>
+                  </h4>
+                  <p><%= post.content %></p>
+                  <!-- Card info -->
+                  <ul class="nav card-info">
+                    <li class="nav-item">
+                      <div class="nav-link">
+                        <div class="avatar-box">
+                          <div class="avatar">
+                            <% if (typeof post.profilePicture !=
+                            'object') { %>
+                            <img
+                              style="aspect-ratio: 5/4"
+                              class=""
+                              src="<%= post.profilePicture %>"
+                            />
+                            <% } else { %>
+                            <img
+                              style="aspect-ratio: 5/4"
+                              class=""
+                              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShV6COs5cj-_AZyyLagu0kCIxox3yf4EnRhyQjJlnoTHjwosJvYR9mTGPH86rDZPF2qgc&usqp=CAU"
+                            />
+                            <% } %>
+                          </div>
+                          <span class="author">
+                            <a href="#"> <%= post.name %> </a></span
+                          >
+                        </div>
+                      </div>
+                    </li>
+                    <li class="nav-item">
+                      • <%= post.createdAt.toLocaleDateString('en-US', { month:
+                      'long', day: 'numeric', year: 'numeric' }) %>
+                    </li>
+                    <li class="nav-item">
+                      • <span><i class="bi bi-hand-thumbs-up"></i></span> <%= post.like_count %>
+                    </li>
+                    <li class="nav-item">
+                      • <span><i class="bi bi-chat-right"></i></span> <%= post.comment_count %>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script>
+      const form = document.getElementById("userProfileForm");
+      const dateOfBirth = document.getElementById("dateOfBirth1");
+      dateOfBirth.value = formatDate(
+        document.getElementById("dateOfBirthRaw").value
+      );
+
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const year = String(date.getFullYear());
+        return `${year}-${month}-${day}`;
+      }
+
+      // const userId = document.getElementById("userId").value;
+      // form.addEventListener("submit", function (event) {
+      //   event.preventDefault(); // Prevent the default form submission
+
+      //   const formData = new FormData(form);
+      //   const data = Object.fromEntries(formData.entries());
+
+      //   const requestOptions = {
+      //     method: "PATCH",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify(data),
+      //   };
+
+      //   fetch(`/api/users/${userId}`, requestOptions)
+      //     .then((response) => response.json())
+      //     .then((result) => {
+      //       console.log("Resource updated:", result);
+      //       // Perform any necessary actions after successful update
+      //       location.reload();
+      //     })
+      //     .catch((error) => {
+      //       console.error("Error updating resource:", error);
+      //       // Handle any error that occurred during update
+      //     });
+      // });
+
+      const userId = document.getElementById("userId").value;
+      form.addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const formData = new FormData(form);
+        const fileInput = document.getElementById("profilePicture1");
+        if (fileInput.files.length > 0) {
+          formData.append("image", fileInput.files[0]);
+        }
+        const requestOptions = {
+          method: "PATCH",
+          body: formData,
+        };
+
+        fetch(`/api/users/${userId}`, requestOptions)
+          .then((response) => response.json())
+          .then((result) => {
+            console.log("Resource updated:", result);
+            // Perform any necessary actions after successful update
+            location.reload();
+          })
+          .catch((error) => {
+            console.error("Error updating resource:", error);
+            // Handle any error that occurred during update
+          });
+      });
+    </script>
+    <footer class="main-footer"><%- include('partials/_footer.ejs'); %></footer>
+  </body>
+</html>

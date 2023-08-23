@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Registration Page</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background: url("https://img.freepik.com/free-vector/gradient-3d-shapes-background_52683-11213.jpg?w=1380&t=st=1685691058~exp=1685691658~hmac=effba014c40f6018a8380588fc8d76e70dff9fa018c2a00de0672cbb0c2c8949")
+          no-repeat center center fixed;
+        background-size: cover;
+      }
+
+      .register-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 400px;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .register-container h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .register-container input[type="text"],
+      .register-container input[type="email"],
+      .register-container input[type="password"],
+      .register-container input[type="date"],
+      .register-container input[type="file"] {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+
+      .register-container select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+
+      .register-container button {
+        width: 100%;
+        padding: 10px;
+        background-color: #5e4cafe0;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+      .register-container .login-link,
+      .register-container .home-link {
+        display: flex;
+        text-align: center;
+        margin-top: 10px;
+        justify-content: space-evenly;
+      }
+
+      .register-container .login-link a,
+      .register-container .home-link a {
+        color: #5e4cafe0;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="register-container">  
+      <h2>Register</h2>
+      <div>
+        <form action="/api/auth/register" method="POST" enctype="multipart/form-data"> 
+          <input type="text" placeholder="Username" name="name" required />
+          <input type="email" placeholder="Email" name="email" required />
+          <input
+            type="password"
+            placeholder="Password"
+            name="password"
+            required
+          />
+          <input type="date" name="dateOfBirth" required /><br />
+          <select name="gender" required>
+            <option value="" disabled selected>Select your gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option></select
+          ><br />
+          <input type="file" name="profilePicture" />
+          <button type="submit">Register</button>
+        </form>
+      </div>
+      <div class="login-link">
+        <span> Already have an account? </span>
+        <a href="login">Login here</a>
+      </div>
+      <div class="home-link">
+      <a href="/view/home-page">Continue as Guest</a>
+    </div>
+    </div>
+  </body>
+</html>

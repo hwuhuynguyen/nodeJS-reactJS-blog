@@ -113,6 +113,7 @@ exports.logout = catchAsync(async (req, res, next) => {
   res.cookie("jwt", "log-out", cookieOptions);
   res.clearCookie("jwt");
 });
+
 exports.restrictTo =
   (...roles) =>
   (req, res, next) => {

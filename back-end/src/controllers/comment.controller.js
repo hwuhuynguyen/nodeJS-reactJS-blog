@@ -67,7 +67,7 @@ exports.createComment = async function (req, res, next) {
 
   const row = await commentService.findCommentById(comment.id);
   console.log(row);
-  const newComment = await commentService.findCommentByIdAndItsAuthorAndLikeCount(comment.id);
+  const newComment =  await commentService.findCommentByIdAndItsAuthorAndLikeCount(comment.id);
 
   res.status(200).json({
     status: "success",

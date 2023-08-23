@@ -1,0 +1,36 @@
+<!-- after -->
+<nav class="navbar" id="navbar-sticky">
+  <div class="container">
+    <a class="navbar-brand" href="/view/home-page">
+      <img class="navbar-brand-item" src="/images/logo.svg" />
+    </a>
+
+    <ul class="nav">
+      <li class="nav-item">
+          <a
+            href="/view/home-page"
+            role="button">
+            Home
+          </a>
+      </li>
+      <li class="nav-item">
+          <a
+            href="/view/posts"
+            role="button">
+            Posts
+          </a>
+      </li>
+      <li class="nav-item active"><a href="/view/dashboard">Dashboard</a></li>
+    </ul>
+    <div class="d-flex align-items-center">
+      <% if (typeof user != 'undefined') { %>
+        <img></img>
+        <span>Hi, <%= user.name %>!</span>
+        <a style="text-decoration: none;" class="subcribe-btn" id="logout" href="/view/auth/logout">Logout</a>
+      <% } else { %>
+        <a style="text-decoration: none;" class="subcribe-btn" id="signup" href="/view/auth/register">Sign Up</a>
+        <a style="text-decoration: none;" class="subcribe-btn" id="login" href="/view/auth/login">Login</a>
+      <% } %>
+    </div>
+  </div>
+</nav>
