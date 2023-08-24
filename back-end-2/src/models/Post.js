@@ -13,10 +13,22 @@ const Post = sequelize.define(
     title: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notNull: {
+          args: true,
+          msg: 'Please enter post title!'
+        },
+      }
     },
     content: {
       type: DataTypes.TEXT,
       allowNull: false,
+      validate: {
+        notNull: {
+          args: true,
+          msg: 'Please enter post content!'
+        },
+      }
     },
     postPicture: {
       type: DataTypes.STRING,

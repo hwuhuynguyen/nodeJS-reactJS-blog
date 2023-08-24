@@ -5,6 +5,7 @@ import PostDetail from "../../../components/post/PostDetail";
 import { AuthContext } from "../../../context/context";
 import CommentForm from "../../../components/comment/CommentForm";
 import { ROOT_URL } from "../../../constants";
+import Swal from "sweetalert2";
 
 const PostDetailPage = () => {
   const params = useParams();
@@ -18,7 +19,14 @@ const PostDetailPage = () => {
   useEffect(() => {
     console.log('user: ' + user);
     if (!user) {
-      navigate('/auth/login');
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'You need to login to access this function!',
+        footer: 'You can <a href="/auth/login">login</a> to access this feature',
+        confirmButtonText: 'OK! I got it!',
+      })
+      navigate("/");
       return;
     }
     const fetchData = async () => {

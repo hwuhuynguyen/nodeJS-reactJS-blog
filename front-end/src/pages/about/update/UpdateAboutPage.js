@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import MainNavigation from "../../../components/navigation/MainNavigation";
 import ProfileForm from "../../../components/profile/ProfileForm";
 import { ROOT_URL } from "../../../constants";
+import Swal from "sweetalert2";
 
 const UpdateAboutPage = () => {
   const authCtx = useContext(AuthContext);
@@ -12,7 +13,15 @@ const UpdateAboutPage = () => {
 
   useEffect(() => {
     if (!user) {
-      navigate("/auth/login");
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'You need to login to access this function!',
+        footer: 'You can <a href="/auth/login">login</a> to access this feature',
+        confirmButtonText: 'OK! I got it!',
+      })
+      navigate("/");
+      return;
     }
 
     const jwt = localStorage.getItem('jwt');

@@ -1,20 +1,5 @@
-const { query } = require("express");
 const sequelize = require("../config/database.config");
 const Post = require("../models/Post");
-const User = require("../models/User");
-
-// exports.addNewPost = (data) => {
-//   return new Promise((resolve, reject) => {
-//     sequelize.query("INSERT INTO posts SET ?", data, (err, results) => {
-//       if (err) {
-//         reject(err);
-//       } else {
-//         console.log("New post inserted successfully");
-//         resolve(results);
-//       }
-//     });
-//   });
-// };
 
 exports.addNewPost = (data) => {
 	return Post.create(data)
@@ -64,31 +49,6 @@ exports.findAllPostsAndItsAuthor = () => {
 		);
 	});
 };
-
-// exports.findAllPostsAndItsAuthorAndStats = () => {
-//   return new Promise((resolve, reject) => {
-//     const query = `SELECT p.id, p.title, p.content, p.postPicture, p.createdAt, u.name, u.profilePicture,
-//       COUNT(DISTINCT c.id) AS comment_count, COUNT(DISTINCT lp.id) AS like_count
-//       FROM posts p
-//       JOIN users u ON p.author = u.id
-//       LEFT JOIN comments c ON p.id = c.post_id
-//       LEFT JOIN like_posts lp ON p.id = lp.post_id
-//       GROUP BY p.id, p.title, p.content, p.postPicture, p.createdAt, u.name, u.profilePicture;`;
-
-//     sequelize.query(query, (err, results) => {
-//       if (err) {
-//         reject(err);
-//       } else {
-//         if (results.length > 0) {
-//           console.log("Posts found successfully");
-//           resolve(results);
-//         } else {
-//           reject(new Error("Post not found"));
-//         }
-//       }
-//     });
-//   });
-// };
 
 exports.findAllPostsAndItsAuthorAndStats = () => {
 	const query = `SELECT p.id, p.title, p.content, p.postPicture, p.createdAt, u.name, u.profilePicture, 
@@ -154,7 +114,6 @@ exports.findPostByIdAndItsAuthor = (id) => {
 };
 
 exports.getPostsByUser = (userId) => {
-	// return new Promise((resolve, reject) => {
 	const query = `SELECT p.id, p.title, p.content, p.postPicture, p.createdAt, u.name, u.profilePicture, 
     COUNT(DISTINCT c.id) AS comment_count, COUNT(DISTINCT lp.id) AS like_count
     FROM posts p
@@ -182,25 +141,7 @@ exports.getPostsByUser = (userId) => {
 		.catch((error) => {
 			throw error;
 		});
-	// });
 };
-
-// exports.updatePostById = (id, post) => {
-//   return new Promise((resolve, reject) => {
-//     sequelize.query(
-//       "UPDATE posts SET ? WHERE id = ?",
-//       [post, id],
-//       (err, results) => {
-//         if (err) {
-//           reject(err);
-//         } else {
-//           console.log("Post updated successfully");
-//           resolve(results);
-//         }
-//       }
-//     );
-//   });
-// };
 
 exports.updatePostById = (id, post) => {
 	return Post.update(post, {
@@ -242,26 +183,6 @@ exports.findPostByIdAndItsAuthorAndLikeCount = (id) => {
 			throw error;
 		});
 };
-
-// exports.findRecentPosts = () => {
-//   return new Promise((resolve, reject) => {
-//     sequelize.query(
-//       "SELECT * FROM posts ORDER BY createdAt DESC LIMIT 5",
-//       (err, results) => {
-//         if (err) {
-//           reject(err);
-//         } else {
-//           if (results.length > 0) {
-//             console.log("Posts found successfully");
-//             resolve(results);
-//           } else {
-//             reject(new Error("Post not found"));
-//           }
-//         }
-//       }
-//     );
-//   });
-// }
 
 exports.findRecentPosts = async () => {
 	return await Post.findAll({

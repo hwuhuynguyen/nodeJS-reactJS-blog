@@ -12,6 +12,12 @@ const User = sequelize.define(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notNull: {
+          args: true,
+          msg: 'Please enter your name!'
+        },
+      }
     },
     email: {
       type: DataTypes.STRING,

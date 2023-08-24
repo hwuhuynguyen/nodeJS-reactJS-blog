@@ -3,6 +3,7 @@ import MainNavigation from "../../../components/navigation/MainNavigation";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../../context/context";
 import PostForm from "../../../components/post/PostForm";
+import Swal from "sweetalert2";
 
 const UpdatePostPage = () => {
   const authCtx = useContext(AuthContext);
@@ -15,7 +16,17 @@ const UpdatePostPage = () => {
 
   console.log(params);
   useEffect(() => {
-    if (!user) navigate("/auth/login");
+    if (!user) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'You need to login to access this function!',
+        footer: 'You can <a href="/auth/login">login</a> to access this feature',
+        confirmButtonText: 'OK! I got it!',
+      })
+      navigate("/");
+      return;
+    };
   }, [navigate, user]);
 
   return (

@@ -14,32 +14,34 @@ function PostsPage() {
   const user = authCtx.user;
 
   useEffect(() => {
-    // if (!user) {
-    //   Swal.fire({
-    //     icon: 'error',
-    //     title: 'Oops...',
-    //     text: 'You need to login to access this function!',
-    //     footer: '<a href="/auth/login">Login</a>'
-    //   })
-    //   navigate("/");
-    // } else {
-    //   fetch(`${ROOT_URL}/posts`)
-    //     .then((response) => response.json())
-    //     .then((response) => {
-    //       setPosts(response.posts);
-    //     })
-    //     .catch((err) => console.log(err));
-    // }
-
     if (!user) {
-      navigate("/auth/login");
-    }
-    fetch(`${ROOT_URL}/posts`)
-      .then((response) => response.json())
-      .then((response) => {
-        setPosts(response.posts);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'You need to login to access this function!',
+        footer: 'You can <a href="/auth/login">login</a> to access this feature',
+        confirmButtonText: 'OK! I got it!',
       })
-      .catch((err) => console.log(err));
+      navigate("/");
+      return;
+    } else {
+      fetch(`${ROOT_URL}/posts`)
+        .then((response) => response.json())
+        .then((response) => {
+          setPosts(response.posts);
+        })
+        .catch((err) => console.log(err));
+    }
+
+    // if (!user) {
+    //   navigate("/auth/login");
+    // }
+    // fetch(`${ROOT_URL}/posts`)
+    //   .then((response) => response.json())
+    //   .then((response) => {
+    //     setPosts(response.posts);
+    //   })
+    //   .catch((err) => console.log(err));
   }, [navigate, user]);
   return (
     <>

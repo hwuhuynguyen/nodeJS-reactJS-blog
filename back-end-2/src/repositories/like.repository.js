@@ -25,27 +25,6 @@ exports.getLikesOfAPost = (postId) => {
   });
 };
 
-// exports.getLikesOfAComment = (commentId) => {
-//   return new Promise((resolve, reject) => {
-//     sequelize.query(
-//       "SELECT count(id) AS like_count FROM like_comments WHERE comment_id = ?",
-//       commentId,
-//       (err, result) => {
-//         if (err) {
-//           reject(err);
-//         } else {
-//           if (result.length > 0) {
-//             console.log("Record found successfully");
-//             resolve(result);
-//           } else {
-//             reject(new Error("Record not found"));
-//           }
-//         }
-//       }
-//     );
-//   });
-// };
-
 exports.getLikesOfAComment = async (commentId) => {
   return await LikeComment.findAll({
     raw: true,
@@ -132,22 +111,6 @@ exports.removeLikeToLikePostList = (userId, postId) => {
     });
 };
 
-
-// exports.addLikeToLikeCommentList = (userId, commentId) => {
-//   return new Promise((resolve, reject) => {
-//     const query = "INSERT INTO like_comments SET ?";
-//     const values = { user_id: userId, comment_id: commentId }; 
-//     sequelize.query(query, values, (err, result) => {
-//       if (err) {
-//         reject(err);
-//       } else {
-//         console.log("Added new like to comment like list successfully");
-//         resolve(result);
-//       }
-//     });
-//   });
-// };
-
 exports.addLikeToLikeCommentList = (userId, commentId) => {
   return LikeComment.create({ user_id: userId, comment_id: commentId })
     .then((result) => {
@@ -158,20 +121,6 @@ exports.addLikeToLikeCommentList = (userId, commentId) => {
       throw err;
     });
 };
-
-// exports.removeLikeToLikeCommentList = (userId, commentId) => {
-//   return new Promise((resolve, reject) => {
-//     const query = "DELETE FROM like_comments WHERE user_id = ? AND comment_id = ?";
-//     sequelize.query(query, [userId, commentId], (err, result) => {
-//       if (err) {
-//         reject(err);
-//       } else {
-//         console.log("Removed like to comment like list successfully");
-//         resolve(result);
-//       }
-//     });
-//   });
-// };
 
 exports.removeLikeToLikeCommentList = (userId, commentId) => {
   return LikeComment.destroy({

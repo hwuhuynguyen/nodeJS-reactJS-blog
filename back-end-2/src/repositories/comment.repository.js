@@ -1,31 +1,6 @@
 const sequelize = require("../config/database.config");
 const Comment = require("../models/Comment");
 const User = require("../models/User");
-const LikeComment = require("../models/LikeComment");
-
-// exports.addNewComment = (data) => {
-//   return new Promise((resolve, reject) => {
-//     sequelize.query("INSERT INTO comments SET ?", data, (err, results) => {
-//       if (err) {
-//         reject(err);
-//       } else {
-//         const insertedCommentId = results.insertId;
-//         sequelize.query(
-//           "SELECT * FROM comments WHERE id = ?",
-//           insertedCommentId,
-//           (err, results) => {
-//             if (err) {
-//               reject(err);
-//             } else {
-//               console.log("Record inserted successfully");
-//               resolve(results[0]);
-//             }
-//           }
-//         );
-//       }
-//     });
-//   });
-// };
 
 exports.addNewComment = (data) => {
   return Comment.create(data)
@@ -72,26 +47,6 @@ exports.findAllCommentsByPost = (postId) => {
     });
 };
 
-// exports.findCommentById = (commentId) => {
-//   return new Promise((resolve, reject) => {
-//     sequelize.query(
-//       "SELECT * FROM comments WHERE id = ?",
-//       commentId,
-//       (err, result) => {
-//         if (err) reject(err);
-//         else {
-//           if (result.length > 0) {
-//             console.log("Comment found successfully");
-//             resolve(result[0]);
-//           } else {
-//             reject(new Error("Comment not found"));
-//           }
-//         }
-//       }
-//     );
-//   });
-// };
-
 exports.findCommentById = (commentId) => {
   return Comment.findByPk(commentId)
     .then((comment) => {
@@ -106,23 +61,6 @@ exports.findCommentById = (commentId) => {
       throw error;
     });
 };
-
-// exports.updateComment = (comment, id) => {
-//   return new Promise((resolve, reject) => {
-//     sequelize.query(
-//       "UPDATE comments SET ? WHERE id = ?",
-//       [comment, id],
-//       (err, results) => {
-//         if (err) {
-//           reject(err);
-//         } else {
-//           console.log("Comment updated successfully");
-//           resolve(results);
-//         }
-//       }
-//     );
-//   });
-// };
 
 exports.updateComment = (comment, id) => {
   return Comment.update(comment, {
@@ -142,25 +80,6 @@ exports.updateComment = (comment, id) => {
 };
 
 exports.getCommentSortedOfAPost = (id) => {
-  // const query = `
-  //   SELECT *
-  //   FROM comments
-  //   WHERE post_id = ?
-  //   ORDER BY
-  //     CAST(SUBSTRING_INDEX(path, '.', 1) AS UNSIGNED),
-  //     CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(path, '.', -1), '.', 1) AS UNSIGNED),
-  //     CAST(SUBSTRING_INDEX(path, '.', -1) AS UNSIGNED)
-  // `;
-  // const query2 = `
-  // SELECT c.id, c.content, c.post_id, c.user_id, c.path, u.name
-  // FROM comments c
-  // LEFT JOIN users u ON c.user_id = u.id
-  // WHERE post_id = ?
-  // ORDER BY
-  //   CAST(SUBSTRING_INDEX(path, '.', 1) AS UNSIGNED),
-  //   CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(path, '.', -1), '.', 1) AS UNSIGNED),
-  //   CAST(SUBSTRING_INDEX(path, '.', -1) AS UNSIGNED);
-  // `;
   const query3 = `
     SELECT c.id, c.content, c.post_id, c.user_id, c.path, u.name 
     FROM comments c
@@ -184,45 +103,6 @@ exports.getCommentSortedOfAPost = (id) => {
       throw error;
     });
 };
-
-// exports.findCommentByIdAndItsAuthorAndLikeCount = async (id) => {
-//   return await Comment.findAll({
-//     attributes: [
-//       'id',
-//       'content',
-//       'post_id',
-//       'user_id',
-//       [sequelize.fn('COUNT', sequelize.col('like_comments.id')), 'like_count']
-//     ],
-//     include: [
-//       {
-//         model: User,
-//         as: 'user',
-//         attributes: ['name', 'profilePicture']
-//       },
-//       {
-//         model: LikeComment,
-//         as: 'comment',
-//         attributes: []
-//       }
-//     ],
-//     where: {
-//       id: id
-//     },
-//     group: ['Comment.id', 'User.id']
-//   })
-//     .then((results) => {
-//       if (results.length > 0) {
-//         console.log("Comments found successfully");
-//         return results;
-//       } else {
-//         throw new Error("Comment not found");
-//       }
-//     })
-//     .catch((error) => {
-//       throw error;
-//     });
-// };
 
 exports.findCommentByIdAndItsAuthorAndLikeCount = async (id) => {
   const query = `
