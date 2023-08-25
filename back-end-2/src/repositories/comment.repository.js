@@ -104,6 +104,61 @@ exports.getCommentSortedOfAPost = (id) => {
     });
 };
 
+exports.getCommentSortedOfAPostAndAddLevel = (id) => {
+  const query3 = `
+    SELECT c.id, c.content, c.post_id, c.user_id, c.path, u.name,
+      (LENGTH(c.path) - LENGTH(REPLACE(c.path, '.', ''))) + 1 AS level
+    FROM comments c
+    LEFT JOIN users u ON c.user_id = u.id
+    WHERE post_id = :postID
+    ORDER BY path;
+    `;
+  const replacements = {
+    postID: id,
+  };
+  return sequelize
+    .query(query3, {
+      replacements: replacements,
+      type: sequelize.QueryTypes.SELECT,
+    })
+    .then((results) => {
+      console.log("Comment uploaded and sorted successfully");
+      return results;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+exports.getCommentSortedOfAPostAndAddLevelAndIsLikedOrNot = (postId, userId) => {
+  const query3 = `
+    SELECT c.id, c.content, c.post_id, c.user_id, c.path, u.name,
+      (LENGTH(c.path) - LENGTH(REPLACE(c.path, '.', ''))) + 1 AS level,
+      CASE WHEN lc.user_id = :userId THEN 1 ELSE 0 END AS isLiked
+    FROM comments c
+    LEFT JOIN users u ON c.user_id = u.id
+    LEFT JOIN like_comments lc ON c.id = lc.comment_id AND lc.user_id = :userId
+    WHERE post_id = :postId
+    ORDER BY path;
+    `;
+  const replacements = {
+    postId,
+    userId,
+  };
+  return sequelize
+    .query(query3, {
+      replacements: replacements,
+      type: sequelize.QueryTypes.SELECT,
+    })
+    .then((results) => {
+      console.log("Comment uploaded and sorted successfully");
+      return results;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
 exports.findCommentByIdAndItsAuthorAndLikeCount = async (id) => {
   const query = `
     SELECT c.id, c.content, c.post_id, c.user_id, c.path, u.name, u.profilePicture, COUNT(lc.id) AS like_count

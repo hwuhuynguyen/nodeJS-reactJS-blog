@@ -17,6 +17,10 @@ const User = sequelize.define(
           args: true,
           msg: 'Please enter your name!'
         },
+        notEmpty: {
+          args: true,
+          msg: 'Please enter a valid username!'
+        },
       }
     },
     email: {
@@ -50,6 +54,16 @@ const User = sequelize.define(
     },
     dateOfBirth: {
       type: DataTypes.DATE,
+      allowNull: false,
+      validate: {
+        notNull: {
+          args: true,
+          msg: 'A birthday is required!'
+        },
+        isDate: {
+          msg: 'Please enter a valid date of birth!'
+        },
+      }
     },
     profilePicture: {
       type: DataTypes.STRING,

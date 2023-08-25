@@ -36,9 +36,7 @@ exports.callAPIForPostDetail = async function (req, res, next) {
 	const row = await postRepository.findPostByIdAndItsAuthorAndLikeCount(
 		req.params.postId
 	);
-	// Convert the RowDataPacket object to JSON string and then parse it
-	const rowJson = JSON.stringify(row);
-	const post = JSON.parse(rowJson)[0];
+	const post = JSON.parse(JSON.stringify(row))[0]; // Convert the RowDataPacket object to JSON string and then parse it
 	post.createdAt = new Date(post.createdAt);
 
 	const comments = await commentRepository.getCommentSortedOfAPost(
@@ -65,7 +63,7 @@ exports.callAPIForPostDetail = async function (req, res, next) {
 		} else {
 			post.isLiked = false;
 		}
-		// post.save();
+
 		for (let comment of comments) {
 			try {
 				const likeCount = await likeRepository.getLikesOfAComment(comment.id);
@@ -90,11 +88,55 @@ exports.callAPIForPostDetail = async function (req, res, next) {
 			} catch (err) {}
 		}
 	}
-	console.log(comments);
 	res.status(200).json({
-		status: 'success',
 		post,
-		comments
+		comments,
+	});
+};
+
+exports.callAPIForPostDetailUpdated = async function (req, res, next) {
+	const row = await postRepository.findPostByIdAndItsAuthorAndLikeCount(
+		req.params.postId
+	);
+	const post = JSON.parse(JSON.stringify(row))[0]; // Convert the RowDataPacket object to JSON string and then parse it
+	post.createdAt = new Date(post.createdAt);
+
+	let comments;
+
+	const usersLikedPostRow = await likeRepository
+		.getUsersLikedPost(req.params.postId)
+		.catch((error) => {});
+
+	let usersLikedPost = [];
+	if (usersLikedPostRow?.length > 0) {
+		usersLikedPost = usersLikedPostRow.map((user) => user.user_id);
+		console.log(usersLikedPost);
+	}
+
+	if (typeof req.user !== "undefined") {
+		comments =
+			await commentRepository.getCommentSortedOfAPostAndAddLevelAndIsLikedOrNot(
+				parseInt(req.params.postId, 10),
+				req.user.id
+			);
+		for (let comment of comments) {
+			const likeCount = await likeRepository.getLikesOfAComment(comment.id);
+			likeCount.map((element) => (comment.like = element.like_count));
+		}
+		console.log("check post and comment like or not");
+		if (usersLikedPost.includes(req.user.id)) {
+			post.isLiked = true;
+		} else {
+			post.isLiked = false;
+		}
+	} else {
+		comments = await commentRepository.getCommentSortedOfAPostAndAddLevel(
+			parseInt(req.params.postId, 10)
+		);
+	}
+	res.status(200).json({
+		post,
+		comments,
 	});
 };
 
@@ -112,7 +154,7 @@ exports.callAPIForDashboard = async function (req, res, next) {
 	req.user.dateOfBirth = new Date(req.user.dateOfBirth);
 
 	res.status(200).json({
-		status: 'success',
-		myPosts
+		status: "success",
+		myPosts,
 	});
 };

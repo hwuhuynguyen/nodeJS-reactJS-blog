@@ -13,7 +13,7 @@ router.route("/home-page").get(mainController.callAPIForHomePage);
 
 router
 	.route("/posts/:postId")
-	.get(authController.protect, mainController.callAPIForPostDetail);
+	.get(authController.protect, mainController.callAPIForPostDetailUpdated);
 
 router
 	.route("/dashboard")

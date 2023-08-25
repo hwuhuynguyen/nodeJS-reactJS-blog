@@ -16,7 +16,11 @@ const Post = sequelize.define(
       validate: {
         notNull: {
           args: true,
-          msg: 'Please enter post title!'
+          msg: 'A post title is required!'
+        },
+        notEmpty: {
+          args: true,
+          msg: 'Please enter a valid post title!'
         },
       }
     },
@@ -26,7 +30,11 @@ const Post = sequelize.define(
       validate: {
         notNull: {
           args: true,
-          msg: 'Please enter post content!'
+          msg: 'A post content is required!'
+        },
+        notEmpty: {
+          args: true,
+          msg: 'Please enter a valid post content!'
         },
       }
     },

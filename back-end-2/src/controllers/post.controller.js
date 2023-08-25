@@ -3,6 +3,7 @@ const path = require("path");
 
 const postRepository = require("../repositories/post.repository");
 const commentRepository = require("../repositories/comment.repository");
+const Post = require("./../models/Post");
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
@@ -23,9 +24,7 @@ exports.getAllPosts = async function (req, res, next) {
 	const posts = await postRepository.findAllPosts();
 
 	console.log("Find all: ", Date.now() - date);
-	//   const jwt = res.headers['jwt'];
 	res.status(200).json({
-		status: "success",
 		length: posts.length,
 		data: posts,
 	});
@@ -36,7 +35,6 @@ exports.getPostById = async function (req, res, next) {
 	const post = await postRepository.findPostById(req.params.id);
 	if (post.length === 0) {
 		return res.status(404).json({
-			status: "fail",
 			message: "Post not found with that ID",
 		});
 	}
@@ -44,7 +42,6 @@ exports.getPostById = async function (req, res, next) {
 	console.log(comments);
 	console.log("Time to find post by ID: ", Date.now() - time);
 	res.status(200).json({
-		status: "success",
 		data: post,
 	});
 };
@@ -55,7 +52,6 @@ exports.getAllPostsByUserId = async function (req, res, next) {
 	});
 
 	res.status(200).json({
-		status: "success",
 		length: posts.length,
 		data: posts,
 	});
@@ -64,13 +60,32 @@ exports.getAllPostsByUserId = async function (req, res, next) {
 exports.createPost = async function (req, res, next) {
 	try {
 		if (!req.body.author) req.body.author = req.user.id;
-		console.log(req.body);
 
 		upload.single("postPicture")(req, res, async (err) => {
 			if (err) {
 				// Handle the error if the file upload fails
-				console.error(err);
 				return next(err);
+			}
+
+			try {
+				const checkPost = await Post.build({
+					title: req.body.title,
+					content: req.body.content,
+					author: req.user.id,
+				});
+				// Trigger validations and attempt to save to the database
+				await checkPost.validate();
+			} catch (validationError) {
+				// Extract and format validation error messages
+				const errorMessages = validationError.errors.map(
+					(error) => error.message
+				);
+
+				res.status(400).json({
+					error: "Validation Error",
+					messages: errorMessages,
+				});
+				return; // Stop further execution
 			}
 
       let dataPost = {
@@ -90,8 +105,11 @@ exports.createPost = async function (req, res, next) {
 				post,
 			});
 		});
-	} catch (err) {
-    console.log(err);
+	} catch (error) {
+    res.status(409).json({
+			error,
+			message: error.message,
+		});
   }
 };
 

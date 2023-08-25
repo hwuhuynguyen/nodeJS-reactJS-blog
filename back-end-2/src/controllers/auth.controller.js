@@ -65,6 +65,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 					dateOfBirth: req.body.dateOfBirth,
 				});
 				console.log("Before validation");
+				console.log(checkUser);
 				// Trigger validations and attempt to save to the database
 				await checkUser.validate();
 				console.log("After validation");
