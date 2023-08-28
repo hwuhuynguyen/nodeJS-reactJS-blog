@@ -31,31 +31,18 @@ const RegisterPage = () => {
       dateOfBirth,
       gender,
     };
-
     const formData = new FormData();
 
     // Append the image file
     if (file) {
-      // console.log("FILE: ", file.name);
-      // const filename = file.name;
       formData.append("profilePicture", file);
-      // newUser.img = filename;
     }
-
     // Append additional data to FormData
-    formData.append("name", newUser.username);
-    formData.append("email", newUser.email);
-    formData.append("password", newUser.password);
-    formData.append("dateOfBirth", newUser.dateOfBirth);
+    formData.append("name", newUser.username ? newUser.username : '');
+    formData.append("email", newUser.email ? newUser.email : '');
+    formData.append("password", newUser.password ? newUser.password : '');
+    formData.append("dateOfBirth", newUser.dateOfBirth ? newUser.dateOfBirth : undefined);
     formData.append("gender", newUser.gender);
-
-    console.log(formData);
-    console.log(newUser);
-
-    // Display the values
-    for (const value of formData.values()) {
-      console.log("Form values: ", value);
-    }
 
     try {
       const response = await fetch(`${ROOT_URL}/api/auth/register`, {

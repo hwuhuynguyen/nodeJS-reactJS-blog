@@ -22,7 +22,6 @@ const CreatePostPage = () => {
       return;
     }
   }, [navigate, user]);
-  console.log(user);
   return (
     <>
       <MainNavigation></MainNavigation>

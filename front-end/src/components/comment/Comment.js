@@ -41,7 +41,7 @@ const Comment = ({ comment, onReply }) => {
 
       inputRef.current.value = "";
     } catch (err) {
-      console.log("error: ", err);
+      console.log("Error: ", err);
     }
   };
 

@@ -32,16 +32,6 @@ function PostsPage() {
         })
         .catch((err) => console.log(err));
     }
-
-    // if (!user) {
-    //   navigate("/auth/login");
-    // }
-    // fetch(`${ROOT_URL}/posts`)
-    //   .then((response) => response.json())
-    //   .then((response) => {
-    //     setPosts(response.posts);
-    //   })
-    //   .catch((err) => console.log(err));
   }, [navigate, user]);
   return (
     <>

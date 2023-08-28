@@ -14,6 +14,7 @@ import PostDetailPage from "./pages/post/detail/PostDetailPage";
 import AboutPage from "./pages/about/detail/AboutPage";
 import UpdatePostPage from "./pages/post/update/UpdatePostPage";
 import UpdateAboutPage from "./pages/about/update/UpdateAboutPage";
+import ErrorPage from "./pages/error/Error";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -33,6 +34,7 @@ function App() {
           <Route path="/posts/new" element={<CreatePostPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/about/update" element={<UpdateAboutPage />} /> 
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
       </BrowserRouter>
     </React.Fragment>

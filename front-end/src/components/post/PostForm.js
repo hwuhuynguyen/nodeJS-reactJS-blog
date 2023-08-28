@@ -27,32 +27,18 @@ const PostForm = ({ post }) => {
       title,
       content,
     };
-
     // Create a FormData object
     const formData = new FormData();
-
     // Append the image file
     if (file) {
-      console.log("FILE: ", file.name);
-      const filename = file.name;
-      formData.append("name", filename);
       formData.append("postPicture", file);
-      newPost.img = filename;
     }
-
     // Append additional data to FormData
     formData.append("author", newPost.author);
-    formData.append("title", newPost.title);
-    formData.append("content", newPost.content);
+    formData.append("title", newPost.title ? newPost.title : '');
+    formData.append("content", newPost.content ? newPost.content : '');
 
     const jwt = localStorage.getItem("jwt");
-    console.log(formData);
-    console.log(newPost);
-
-    // Display the values
-    for (const value of formData.values()) {
-      console.log("Form values: ", value);
-    }
 
     try {
       const response = await fetch(
@@ -83,6 +69,14 @@ const PostForm = ({ post }) => {
       } else {
         console.error("Form submission failed");
         console.log(response);
+        const err = await response.json();
+        Swal.fire({ 
+          title: "Error!",
+          html: err.messages?.join('<br>'),
+          icon: "error",
+          timer: 2000,
+          text: err.message
+        });
       }
     } catch (error) {
       console.error("Error submitting form:", error);

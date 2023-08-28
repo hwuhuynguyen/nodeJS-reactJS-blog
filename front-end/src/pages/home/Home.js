@@ -18,7 +18,6 @@ const HomePage = () => {
       setPosts(resData.data.posts);
       setRecentPosts(resData.data.recentPosts);
       setActiveUsers(resData.data.activeUsers);
-      console.log(resData.data);
     };
     fetchPosts();
   }, []);

@@ -17,7 +17,6 @@ const PostDetailPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('user: ' + user);
     if (!user) {
       Swal.fire({
         icon: 'error',
@@ -32,9 +31,6 @@ const PostDetailPage = () => {
     const fetchData = async () => {
       try {
         const jwt = localStorage.getItem("jwt");
-        console.log("Bearer " + jwt);
-        console.log(`${ROOT_URL}/api/v1/posts/${postId}`);
-
         const response = await fetch(
           `${ROOT_URL}/api/v1/posts/${postId}`,
           {

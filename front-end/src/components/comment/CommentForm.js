@@ -50,16 +50,14 @@ const CommentForm = ({ comments, post }) => {
       });
       inputRef.current.value = "";
     } catch (err) {
-      console.log("error: ", err);
+      console.log("Error: ", err);
     }
   };
 
   const handleReply = (commentIndex, replyText) => {
     setCommentList((prevCommentList) => {
       const newCommentList = [...prevCommentList];
-      
-      // Insert the new commentText at the specified index
-      newCommentList.splice(commentIndex + 1, 0, replyText);
+      newCommentList.splice(commentIndex + 1, 0, replyText); // Insert the new commentText at the specified index
       return newCommentList;
     });
   
