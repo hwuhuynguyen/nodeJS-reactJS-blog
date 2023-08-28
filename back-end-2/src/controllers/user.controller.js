@@ -20,7 +20,6 @@ exports.getAllUsers = async function (req, res, next) {
   const users = await userRepository.findAllUsers();
 
   res.status(200).json({
-    status: "success",
     length: users.length,
     data: users,
   });
@@ -36,7 +35,6 @@ exports.getUserById = async function (req, res, next) {
     });
   } else {
     res.status(200).json({
-      status: "success",
       data: user,
     });
   }
@@ -46,7 +44,6 @@ exports.createUser = async function (req, res, next) {
   const user = await userRepository.addNewUser(req.body);
 
   res.status(201).json({
-    status: "success",
     data: user,
   });
 };
@@ -76,7 +73,6 @@ exports.updateUser = async function (req, res, next) {
     console.log("newUser:", newUser);
 
     res.status(200).json({
-      status: "success",
       data: newUser,
     });
   });

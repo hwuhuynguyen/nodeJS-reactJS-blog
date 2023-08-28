@@ -39,7 +39,6 @@ exports.getPostById = async function (req, res, next) {
 		});
 	}
 	const comments = await commentRepository.findAllCommentsByPost(req.params.id);
-	console.log(comments);
 	console.log("Time to find post by ID: ", Date.now() - time);
 	res.status(200).json({
 		data: post,
@@ -57,60 +56,68 @@ exports.getAllPostsByUserId = async function (req, res, next) {
 	});
 };
 
+// Function to handle post validation and return error messages if validation fails
+async function validatePost(postData) {
+	try {
+		const checkPost = await Post.build({
+			title: postData.title,
+			content: postData.content,
+			author: postData.author,
+		});
+		await checkPost.validate();
+		return null; // Validation successful
+	} catch (validationError) {
+		const errorMessages = validationError.errors.map((error) => error.message);
+		return errorMessages;
+	}
+}
+
+// Function to prepare post data, including handling the post picture
+function preparePostData(req, userId) {
+	const dataPost = {
+		title: req.body.title,
+		content: req.body.content,
+		author: userId,
+	};
+
+	if (req.file) {
+		const convertedPath = "/" + path.relative("src/public", req.file.path);
+		dataPost.postPicture = convertedPath;
+	}
+
+	return dataPost;
+}
+
 exports.createPost = async function (req, res, next) {
 	try {
 		if (!req.body.author) req.body.author = req.user.id;
-
 		upload.single("postPicture")(req, res, async (err) => {
 			if (err) {
 				// Handle the error if the file upload fails
 				return next(err);
 			}
-
-			try {
-				const checkPost = await Post.build({
-					title: req.body.title,
-					content: req.body.content,
-					author: req.user.id,
-				});
-				// Trigger validations and attempt to save to the database
-				await checkPost.validate();
-			} catch (validationError) {
-				// Extract and format validation error messages
-				const errorMessages = validationError.errors.map(
-					(error) => error.message
-				);
-
+			const authorId = req.user.id;
+			const postData = preparePostData(req, authorId);
+			const validationErrors = await validatePost(postData);
+			if (validationErrors) {
 				res.status(400).json({
 					error: "Validation Error",
-					messages: errorMessages,
+					messages: validationErrors,
 				});
-				return; // Stop further execution
+				return;
 			}
 
-      let dataPost = {
-				title: req.body.title,
-				content: req.body.content,
-				author: req.user.id,
-			};
-
-      if (req.file) {
-        let convertedPath = "/" + path.relative("src/public", req.file.path);
-        dataPost.postPicture = convertedPath;
-      }
-
-			const post = await postRepository.addNewPost(dataPost);
-
+			const post = await postRepository.addNewPost(postData);
 			res.status(200).json({
 				post,
 			});
 		});
 	} catch (error) {
-    res.status(409).json({
+		res.status(409).json({
 			error,
 			message: error.message,
 		});
-  }
+	}
 };
 
 exports.updatePost = async function (req, res, next) {
@@ -121,15 +128,15 @@ exports.updatePost = async function (req, res, next) {
 			return next(err);
 		}
 
-    const dataPost = {
+		const dataPost = {
 			title: req.body.title,
 			content: req.body.content,
-		}
+		};
 
-    if (req.file) {
-      let convertedPath = "/" + path.relative("src/public", req.file.path);
-      dataPost.postPicture = convertedPath;
-    }
+		if (req.file) {
+			let convertedPath = "/" + path.relative("src/public", req.file.path);
+			dataPost.postPicture = convertedPath;
+		}
 
 		const post = await postRepository.updatePostById(req.params.id, dataPost);
 

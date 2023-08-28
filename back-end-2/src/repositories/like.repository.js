@@ -134,3 +134,30 @@ exports.removeLikeToLikeCommentList = (userId, commentId) => {
       throw err;
     });
 };
+
+exports.checkUserLikedPostOrNot = (userId, postId) => {
+  const query = `SELECT CASE WHEN lp.user_id = :userId THEN 1 ELSE 0 END AS isLiked 
+    FROM posts p
+    LEFT JOIN like_posts lp ON p.id = lp.post_id AND lp.user_id = :userId 
+    WHERE p.id = :postId;`;
+	const replacements = {
+    userId,
+		postId
+	};
+	return sequelize
+		.query(query, {
+			replacements: replacements,
+			type: sequelize.QueryTypes.SELECT,
+		})
+		.then((results) => {
+			if (results.length > 0) {
+				console.log("Posts found successfully");
+				return results;
+			} else {
+				throw new Error("Post not found");
+			}
+		})
+		.catch((error) => {
+			throw error;
+		});
+}

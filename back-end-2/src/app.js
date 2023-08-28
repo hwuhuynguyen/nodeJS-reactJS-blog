@@ -25,12 +25,6 @@ sequelize
     console.error("Could not connect to the database", err);
   });
 
-const User = require("./models/User");
-const Post = require("./models/Post");
-const Comment = require("./models/Comment");
-const LikeComment = require("./models/LikeComment");
-const LikePost = require("./models/LikePost");
-
 const port = process.env.PORT || 3001;
 
 let app = express();

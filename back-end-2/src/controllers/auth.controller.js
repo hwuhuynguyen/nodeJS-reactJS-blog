@@ -40,13 +40,40 @@ exports.createSendToken = (user, statusCode, res) => {
 	console.log("jwt token created successfully");
 
 	res.status(statusCode).json({
-		status: "success",
 		token,
 		data: {
 			user,
 		},
 	});
 };
+
+async function validateUserInput(userInput) {
+	try {
+		const checkUser = await User.build(userInput);
+		await checkUser.validate();
+		return null; // No validation errors
+	} catch (validationError) {
+		const errorMessages = validationError.errors.map((error) => error.message);
+		return errorMessages;
+	}
+}
+
+function prepareUserData(req) {
+	const dataUser = {
+		name: req.body.name,
+		email: req.body.email,
+		password: req.body.password,
+		gender: req.body.gender,
+		dateOfBirth: req.body.dateOfBirth,
+	};
+
+	if (req.file) {
+		const convertedPath = "/" + path.relative("src/public", req.file.path);
+		dataUser.profilePicture = convertedPath;
+	}
+
+	return dataUser;
+}
 
 exports.signup = catchAsync(async (req, res, next) => {
 	upload.single("profilePicture")(req, res, async (err) => {
@@ -55,37 +82,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 				console.error(err);
 				return next(err);
 			}
-
-			try {
-				const checkUser = await User.build({
-					name: req.body.name,
-					email: req.body.email,
-					password: req.body.password,
-					gender: req.body.gender,
-					dateOfBirth: req.body.dateOfBirth,
-				});
-				console.log("Before validation");
-				console.log(checkUser);
-				// Trigger validations and attempt to save to the database
-				await checkUser.validate();
-				console.log("After validation");
-				console.log("no error?");
-			} catch (validationError) {
-				// Extract and format validation error messages
-				const errorMessages = validationError.errors.map(
-					(error) => error.message
-				);
-				console.log(errorMessages);
-
-				res.status(400).json({
-					error: "Validation Error",
-					messages: errorMessages,
-				});
-
-				return; // Stop further execution
-			}
-
-			let dataUser = {
+			const userInput = {
 				name: req.body.name,
 				email: req.body.email,
 				password: req.body.password,
@@ -93,17 +90,19 @@ exports.signup = catchAsync(async (req, res, next) => {
 				dateOfBirth: req.body.dateOfBirth,
 			};
 
-			if (req.file) {
-				let convertedPath = "/" + path.relative("src/public", req.file.path);
-				dataUser.profilePicture = convertedPath;
+			const validationErrors = await validateUserInput(userInput);
+			if (validationErrors) {
+				res.status(400).json({
+					error: "Validation Error",
+					messages: validationErrors,
+				});
+				return;
 			}
 
+			const dataUser = prepareUserData(req);
 			await userRepository.addNewUser(dataUser);
 
 			let newUser = await userRepository.findUserByEmail(req.body.email);
-
-			console.log(newUser);
-
 			this.createSendToken(newUser, 201, res);
 		} catch (error) {
 			res.status(409).json({

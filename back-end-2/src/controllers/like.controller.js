@@ -1,11 +1,8 @@
-const userRepository = require("../repositories/user.repository");
 const postRepository = require("../repositories/post.repository");
 const commentRepository = require("../repositories/comment.repository");
 const likeRepository = require("../repositories/like.repository");
 
 exports.updateLikeInPost = async function (req, res, next) {
-  console.log("get like in post");
-
   let usersLikedPostRow = await likeRepository
     .getUsersLikedPost(req.params.postId)
     .catch((err) => {});
@@ -31,11 +28,8 @@ exports.updateLikeInPost = async function (req, res, next) {
     req.params.postId
   );
   // Convert the RowDataPacket object to JSON string and then parse it
-  const rowJson = JSON.stringify(postRow);
-  const post = JSON.parse(rowJson)[0];
-  console.log(post);
+  const post = JSON.parse(JSON.stringify(postRow))[0];
   res.status(200).json({
-    status: "success",
     data: {
       post,
     },
@@ -70,11 +64,8 @@ exports.updateLikeInComment = async function (req, res, next) {
     req.params.commentId
   );
   // Convert the RowDataPacket object to JSON string and then parse it
-  const rowJson = JSON.stringify(commentRow);
-  const comment = JSON.parse(rowJson)[0];
-  console.log(comment);
+  const comment = JSON.parse(JSON.stringify(commentRow))[0];
   res.status(200).json({
-    status: "success",
     data: {
       comment,
     },
