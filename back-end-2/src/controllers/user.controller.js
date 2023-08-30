@@ -14,16 +14,20 @@ const storage = multer.diskStorage({
   },
 });
 
-var upload = multer({ storage: storage });
-
-exports.getAllUsers = async function (req, res, next) {
-  const users = await userRepository.findAllUsers();
-
-  res.status(200).json({
-    length: users.length,
-    data: users,
-  });
+const imageFilter = (req, file, cb) => {
+  // Chỉ chấp nhận tệp có định dạng hình ảnh
+  if (
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/gif"
+  ) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only image files are allowed!"), false);
+  }
 };
+
+var upload = multer({ storage: storage, fileFilter: imageFilter});
 
 exports.getUserById = async function (req, res, next) {
   const user = await userRepository.findUserById(req.params.id);
@@ -38,14 +42,6 @@ exports.getUserById = async function (req, res, next) {
       data: user,
     });
   }
-};
-
-exports.createUser = async function (req, res, next) {
-  const user = await userRepository.addNewUser(req.body);
-
-  res.status(201).json({
-    data: user,
-  });
 };
 
 exports.updateUser = async function (req, res, next) {

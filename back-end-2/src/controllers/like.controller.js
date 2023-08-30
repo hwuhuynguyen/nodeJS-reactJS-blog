@@ -37,8 +37,6 @@ exports.updateLikeInPost = async function (req, res, next) {
 };
 
 exports.updateLikeInComment = async function (req, res, next) {
-  console.log("get like in comment");
-
   let usersLikedCommentRow = await likeRepository
     .getUsersLikedComment(req.params.commentId)
     .catch((err) => {});

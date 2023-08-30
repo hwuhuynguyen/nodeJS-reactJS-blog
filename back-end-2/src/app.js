@@ -1,7 +1,6 @@
 const path = require("path");
 const dotenv = require("dotenv");
 const express = require("express");
-const multer = require("multer");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -9,8 +8,6 @@ const cors = require("cors");
 const authRouter = require("./routes/auth.routes");
 const userRouter = require("./routes/user.routes");
 const postRoutes = require("./routes/post.routes");
-const commentRoutes = require("./routes/comment.routes");
-const viewRoutes = require("./routes/view.routes");
 const mainRouter = require("./routes/main.routes");
 const sequelize = require("./config/database.config");
 
@@ -33,21 +30,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.set("view engine", "ejs");
-app.set("views", "src/views");
-
 app.use(express.static(path.join(__dirname, "public")));
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "src/public/img");
-  },
-  filename: (req, file, cb) => {
-    cb(null, req.body.name);
-  },
-});
-
-var upload = multer({ storage: storage });
 
 app.use(cors());
 
@@ -70,19 +53,11 @@ app.use(function (req, res, next) {
 	next();
 });
 
-app.use("", viewRoutes);
-
 app.use("/api/v1", mainRouter);
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/posts", postRoutes);
-app.use("/api/comments", commentRoutes);
-
-app.post("/api/upload", upload.single("file"), (req, res) => {
-  console.log(req.body);
-  res.status(200).json("File uploaded successfully");
-});
 
 app.all("*", (req, res, next) => {
   res

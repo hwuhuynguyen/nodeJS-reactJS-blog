@@ -21,12 +21,12 @@ var upload = multer({ storage: storage });
 exports.getAllPosts = async function (req, res, next) {
 	const date = Date.now();
 
-	const posts = await postRepository.findAllPosts();
+	const posts = await postRepository.findAllPostsAndItsAuthorAndStats();
 
 	console.log("Find all: ", Date.now() - date);
 	res.status(200).json({
 		length: posts.length,
-		data: posts,
+		posts,
 	});
 };
 

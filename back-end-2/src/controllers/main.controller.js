@@ -5,9 +5,7 @@ const likeRepository = require("../repositories/like.repository");
 
 exports.callAPIForHomePage = async function (req, res, next) {
 	const activeUsers = await userRepository.getUsersWithMostPosts();
-	const date = Date.now();
 	const posts = await postRepository.findAllPostsAndItsAuthorAndStats();
-	console.log("Find all: ", Date.now() - date);
 	const recentPosts = await postRepository.findRecentPosts();
 
 	res.status(200).json({
@@ -53,23 +51,11 @@ exports.callAPIForPostDetailUpdated = async function (req, res, next) {
 			const likeCount = await likeRepository.getLikesOfAComment(comment.id);
 			likeCount.map((element) => (comment.like = element.like_count));
 		}
-	} else {
-		comments = await commentRepository.getCommentSortedOfAPostAndAddLevel(
-			parseInt(req.params.postId, 10)
-		);
-	}
+	} 
 	res.status(200).json({
 		post,
 		comments,
 	});
-};
-
-exports.displayLoginPage = async function (req, res, next) {
-	res.render("auth/login");
-};
-
-exports.displayRegisterPage = async function (req, res, next) {
-	res.render("auth/register");
 };
 
 exports.callAPIForDashboard = async function (req, res, next) {

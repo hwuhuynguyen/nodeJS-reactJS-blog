@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 	},
 });
 
-var upload = multer({ storage: storage });
+var upload = multer({ storage: storage});
 
 const signToken = (id) =>
 	jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -82,15 +82,8 @@ exports.signup = catchAsync(async (req, res, next) => {
 				console.error(err);
 				return next(err);
 			}
-			const userInput = {
-				name: req.body.name,
-				email: req.body.email,
-				password: req.body.password,
-				gender: req.body.gender,
-				dateOfBirth: req.body.dateOfBirth,
-			};
-
-			const validationErrors = await validateUserInput(userInput);
+			const dataUser = prepareUserData(req);
+			const validationErrors = await validateUserInput(dataUser);
 			if (validationErrors) {
 				res.status(400).json({
 					error: "Validation Error",
@@ -98,10 +91,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 				});
 				return;
 			}
-
-			const dataUser = prepareUserData(req);
 			await userRepository.addNewUser(dataUser);
-
 			let newUser = await userRepository.findUserByEmail(req.body.email);
 			this.createSendToken(newUser, 201, res);
 		} catch (error) {
@@ -115,15 +105,12 @@ exports.signup = catchAsync(async (req, res, next) => {
 
 exports.login = catchAsync(async (req, res, next) => {
 	const { email, password } = req.body;
-	console.log(req.body);
 	if (!email || !password) {
 		return next(new AppError("Please provide email and password!"), 400);
 	}
-
 	const user = await userRepository
 		.findUserByEmailAndPassword(email, password)
 		.catch((err) => {});
-	console.log(user);
 	if (user) {
 		this.createSendToken(user, 200, res);
 	} else {
@@ -215,22 +202,4 @@ exports.isLoggedIn = async (req, res, next) => {
 	} catch (err) {
 		next();
 	}
-};
-
-exports.checkLoggedIn = async (req, res, next) => {
-	let token = req.cookies.jwt;
-
-	if (!token) {
-		return next();
-	} else {
-		res.redirect("/view/home-page");
-	}
-};
-
-exports.showLoginPage = (req, res, next) => {
-	res.render("auth/login");
-};
-
-exports.showRegisterPage = (req, res, next) => {
-	res.render("auth/register");
 };

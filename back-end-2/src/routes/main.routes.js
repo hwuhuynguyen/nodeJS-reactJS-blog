@@ -1,8 +1,6 @@
 const express = require("express");
 
-const postController = require("../controllers/post.controller");
 const authController = require("../controllers/auth.controller");
-const viewController = require("../controllers/view.controller");
 const mainController = require("../controllers/main.controller");
 
 const router = express.Router();
@@ -10,6 +8,8 @@ const router = express.Router();
 router.use(authController.isLoggedIn);
 
 router.route("/home-page").get(mainController.callAPIForHomePage);
+
+router.route("/posts").get(mainController.callAPIForPostsPage);
 
 router
 	.route("/posts/:postId")
