@@ -184,6 +184,37 @@ exports.findPostByIdAndItsAuthorAndLikeCount = (id) => {
 		});
 };
 
+exports.findPostByIdAndItsAuthorAndLikeList = (id) => {
+	const query = `SELECT p.id, p.title, p.content, p.postPicture, p.author, p.createdAt, u.name, u.profilePicture , count(lp.id) AS like_count,
+			(SELECT group_concat(concat_ws(',', user_id) separator ';') 
+			FROM like_posts 
+			WHERE like_posts.post_id = p.id) AS likes
+		FROM posts p
+    JOIN users u ON p.author = u.id
+    LEFT JOIN like_posts lp ON p.id = lp.post_id
+    WHERE p.id = :postID
+    GROUP BY lp.post_id;`;
+	const replacements = {
+		postID: id,
+	};
+	return sequelize
+		.query(query, {
+			replacements: replacements,
+			type: sequelize.QueryTypes.SELECT,
+		})
+		.then((results) => {
+			if (results.length > 0) {
+				console.log("Posts found successfully");
+				return results;
+			} else {
+				throw new Error("Post not found");
+			}
+		})
+		.catch((error) => {
+			throw error;
+		});
+};
+
 exports.findRecentPosts = async () => {
 	return await Post.findAll({
 		order: [["createdAt", "DESC"]],

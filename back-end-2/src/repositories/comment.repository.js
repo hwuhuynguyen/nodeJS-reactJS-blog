@@ -189,6 +189,36 @@ exports.getCommentSortedOfAPostAndAddLevelAndIsLikedOrNotAndLikeCount = (postId,
     });
 };
 
+exports.getCommentSortedOfAPostAndAddLevelAndLikeList = (postId) => {
+  const query3 = `
+    SELECT c.id, c.content, c.post_id, c.user_id, c.path, u.name,
+      (LENGTH(c.path) - LENGTH(REPLACE(c.path, '.', ''))) + 1 AS level,
+      (SELECT group_concat(concat_ws(',', user_id) separator ';') 
+        FROM like_comments 
+        WHERE like_comments.comment_id = c.id) AS likes
+    FROM comments c
+    LEFT JOIN users u ON c.user_id = u.id
+    LEFT JOIN like_comments lc ON c.id = lc.comment_id AND c.user_id = lc.user_id
+    WHERE post_id = :postId
+    ORDER BY path;
+    `;
+  const replacements = {
+    postId,
+  };
+  return sequelize
+    .query(query3, {
+      replacements: replacements,
+      type: sequelize.QueryTypes.SELECT,
+    })
+    .then((results) => {
+      console.log("Comment uploaded and sorted successfully");
+      return results;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
 exports.findCommentByIdAndItsAuthorAndLikeCount = async (id) => {
   const query = `
     SELECT c.id, c.content, c.post_id, c.user_id, c.path, u.name, u.profilePicture, COUNT(lc.id) AS like_count

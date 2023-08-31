@@ -45,7 +45,19 @@ const PostDetailPage = () => {
         }
 
         const data = await response.json();
-        setPost(data.post);
+        const comments = data.comments;
+        for (const comment of comments) {
+          if (comment.likes) {
+            const likes = comment.likes.split(';');
+            comment.like = likes.length;
+            if (likes.includes(user.id.toString())) comment.isLiked = true;
+          } else {
+            comment.like = 0;
+          }
+        }
+        const post = data.post;
+        post.likes.split(';').includes(user.id.toString()) ? post.isLiked = true : post.isLiked = false;
+        setPost(post);
         setComments(data.comments);
       } catch (error) {
         console.error("Error fetching post:", error);

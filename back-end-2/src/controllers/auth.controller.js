@@ -18,8 +18,23 @@ const storage = multer.diskStorage({
 		cb(null, uniqueSuffix + "." + fileExtension);
 	},
 });
+const imageFilter = (req, file, cb) => {
+	if (
+		file.mimetype === "image/jpeg" ||
+		file.mimetype === "image/png" ||
+		file.mimetype === "image/gif"
+	) {
+		cb(null, true);
+	} else {
+		cb(new Error("Only image files are allowed!"), false);
+	}
+};
 
-var upload = multer({ storage: storage});
+var upload = multer({ storage: storage, fileFilter: imageFilter });
+
+exports.uploadProfilePicture = async (req, res, next) => {
+	upload.single("profilePicture");
+};
 
 const signToken = (id) =>
 	jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -80,6 +95,9 @@ exports.signup = catchAsync(async (req, res, next) => {
 		try {
 			if (err) {
 				console.error(err);
+				res.status(400).json({
+					message: 'Please upload the correct image format: jpg, png, gif.'
+				})
 				return next(err);
 			}
 			const dataUser = prepareUserData(req);

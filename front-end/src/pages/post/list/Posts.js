@@ -25,7 +25,7 @@ function PostsPage() {
       navigate("/");
       return;
     } else {
-      fetch(`${ROOT_URL}/posts`)
+      fetch(`${ROOT_URL}/api/v1/posts`)
         .then((response) => response.json())
         .then((response) => {
           setPosts(response.posts);
@@ -63,16 +63,3 @@ function PostsPage() {
 }
 
 export default PostsPage;
-
-export const loader = async () => {
-  const response = await fetch(`${ROOT_URL}/posts`);
-
-  if (!response.ok) {
-    throw new Response(JSON.stringify({ message: "Could not fetch posts" }), {
-      status: 500,
-    });
-  } else {
-    const resData = await response.json();
-    return resData.data;
-  }
-};
